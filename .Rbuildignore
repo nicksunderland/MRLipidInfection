@@ -1,2 +1,5 @@
 ^MRLipidInfection\.Rproj$
 ^\.Rproj\.user$
+^README\.Rmd$
+^LICENSE\.md$
+^inst\extdata\finngen_data\.gz$
