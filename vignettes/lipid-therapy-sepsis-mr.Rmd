@@ -11,7 +11,7 @@ editor_options:
   wrap: 80
 ---
 
-```{r, include = FALSE}
+```{r init, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -27,8 +27,8 @@ remotes::install_github("mrcieu/gwasvcf")
 ## Setup
 First we need to load the MRLipidInfection package and setup package requirements by calling
 'setupMRLipidInfection()'. At the first installation this will take some time as this will download
-the 1000 genomes LD reference panel into the package file structure and ensure that PLINK is
-installed locally.
+the [1000 genomes LD reference panel](http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tgz) into the package
+file structure and ensure that [PLINK](https://www.cog-genomics.org/plink/) is installed locally.
 
 ```{r setup, eval=FALSE}
 library(MRLipidInfection)
@@ -36,7 +36,7 @@ library(MRLipidInfection)
 setupMRLipidInfection()
 ```
 
-## Exposure data
+# Exposure data
 Next we must obtain the data for the exposure. We are interested whether exposure to lipid lowering
 medications influences risk of developing sepsis. This data is not readily available on a population
 level and has many confounding factors. We will therefore estimate the effect of genetically proxied
@@ -49,7 +49,7 @@ for HDL-C, LDL-C, nonHDL-C, TC and TG.
 First we will download the data for LDL cholesterol - **Warning** GWAS data file is large and will
 take some time to download.
 
-```{r, eval=FALSE}
+```{r download_data, eval=FALSE}
 # The URL for the GWAS summary statistics README document
 url_1 <- "http://csg.sph.umich.edu/willer/public/glgc-lipids2021/results/ancestry_specific/README.txt"
 
@@ -70,7 +70,7 @@ There are more than 47 million SNPs in the dataset. We now filter the GWAS data 
 circulating LDL cholesterol levels at a statisticsal significance of <5e-8. Reading this file can
 take a long time and so we can write out the result to a .csv file.
 
-```{r, eval=FALSE}
+```{r significant_snps, eval=FALSE}
 # Read the .gz data file
 d <- data.table::fread(fp_2) |>
 
@@ -94,7 +94,7 @@ readr::write_csv(d, fp_d)
 
 In the case we want to re-run the analysis at any point we can just read back in the smaller .csv
 file.
-```{r, eval=FALSE}
+```{r read_data, eval=FALSE}
 # The path to the significant exposure SNPs
 fp_d <- paste0(get_downloads_dir(subdir="glgc"), "/glgc_sig_snps.csv")
 
@@ -104,7 +104,7 @@ d <- readr::read_csv(fp_d, show_col_types=F)
 
 If we inspect the column names we see that they need some adjustment to ensure they are compatible
 with the TwoSampleMR package naming conventions.
-```{r, eval=FALSE}
+```{r standardise, eval=FALSE}
 # The current column names
 colnames(d)
 
@@ -127,3 +127,70 @@ exposure_data <- TwoSampleMR::read_exposure_data(
 # Add 'LDL' as the exposure tag
 exposure_data$exposure <- "LDL"
 ```
+
+## Cis-acting HMG-CoA Redictase SNPs
+We will create a second set of exposure SNPs that will be subset of the SNPs that associate with LDL
+cholesterol levels. This subset of SNPs will be within a certain proximity (number of bases) to the
+HMG-CoA Reductatase gene. Data regarding the position of the HMG-CoA-R gene is freely available
+[online](https://www.genecards.org/cgi-bin/carddisp.pl?gene=HMGCR). The Lipid data from the GLGC
+uses the Genome Reference Consortium Human Reference 37 (GRCh37) and so we must use this when
+referring to the position of the HMG-CoA-R gene.
+
+```{r cis_hmg, eval=FALSE}
+# The HMG-CoA-R gene is on chromosome 5, starts at base 746,32,993 and ends at base 74,657,941.
+chrom <- 5
+start <- 74632993
+end   <- 74657941
+
+# We want to capture SNPs near the HMG-CoA gene and so we must set a tolerance window either side in
+# which to also search
+tol <- 3e5
+
+# Create a new dataset of SNPs close to the HMG-CoA gene
+cis_hmg_exp_dat <- exposure_data |>
+  dplyr::filter(.data$chr.exposure == chrom,
+                .data$pos.exposure > (start - tol),
+                .data$pos.exposure < (end + tol))
+  
+# 
+```
+
+## Clumping lipid exposure SNPs
+Many of the SNPs will be highly correlated, i.e. be genetically linked and provide no additional
+information over and above the whole set of correlated SNPs. To reduce the number of SNPs to only
+those mopst significantly associated with lipid levels we use Linkage Disequilibrium clumping.
+[Clumping](https://kp4cd.org/sites/default/files/documents/LD_clumping.pdf) reports the most
+significant genetic associations in a region in terms of a smaller number of “clumps” of genetically
+linked SNPs.
+
+The clumping procedure has several parameters:
+`clump_kb`
+`clump_r2`
+`clump_p`
+We will use the defaults except for `clump_r2` which we will set to 0.1 instead
+of the default of 0.001. This will clump SNPs that are correlated with an R^2 correlation of >0.1 -
+the SNP with the lower p-value will be removed.
+```{r clumping_params, eval=FALSE}
+clump_r2 <- 0.1
+```
+
+We could do this on the Bristol IEU severs using the function `TwoSampleMR::clump_data`. 
+```{r clumping_1, eval=FALSE}
+clumped_exp <- exposure_data |> 
+  TwoSampleMR::clump_data(clump_r2 = clump_r2)
+```
+
+Alternatively, we can do this locally using the 1000 Genomes Reference Panel and PLINK binary that
+we downloaded earlier.
+```{r clumping, eval=FALSE}
+clumped_exp <- ieugwasr::ld_clump(
+  dat       = dplyr::tibble(rsid=exposure_data$SNP, pval=exposure_data$pval.exposure),
+  plink_bin = genetics.binaRies::get_plink_binary(),
+  bfile     = get_b_file(), 
+  clump_r2  = clump_r2
+)
+```
+# Outcome data
+Sepsis GWAS...
+
+## To be continued
