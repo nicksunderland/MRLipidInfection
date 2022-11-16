@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_files.R
 \name{get_downloads_dir}
 \alias{get_downloads_dir}
-\title{get_downloads_dir}
+\title{get_downloads_dir()}
 \usage{
 get_downloads_dir(subdir = NA)
 }
@@ -14,6 +14,5 @@ downloads directory. If it does not exist, it will be created.}
 the absoltue file path to the downloads folder
 }
 \description{
-I need a downloads directory, just above the package directory, for development to stop package
-building the large datasets. Hopefully will move this into inst/ext once the package is finished
+get_downloads_dir()
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_files.R
 \name{get_finngen}
 \alias{get_finngen}
-\title{Gets the FinnGen data - downloads into inst/extdata}
+\title{get_finngen()}
 \usage{
 get_finngen(filename, type = "summary_stats", overwrite = FALSE)
 }
@@ -17,5 +17,5 @@ get_finngen(filename, type = "summary_stats", overwrite = FALSE)
 a tibble containing the data
 }
 \description{
-Gets the FinnGen data - downloads into inst/extdata
+Gets the FinnGen data - downloads into package downloads directory
 }

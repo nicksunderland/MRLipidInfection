@@ -1,4 +1,6 @@
-#' Gets a web based file - downloads into inst/extdata
+#' get_web_file()
+#'
+#' Gets a web based file and downloads it into the packages downloads directory (inst/extdata)
 #'
 #' @param url url to file to download, a string
 #' @param directory either NA (will download to main downloads directory), a full directory path
@@ -70,7 +72,9 @@ get_web_file <- function(url, directory=NA, overwrite=FALSE)
 }
 
 
-#' Gets the FinnGen data - downloads into inst/extdata
+#' get_finngen()
+#'
+#' Gets the FinnGen data - downloads into package downloads directory
 #'
 #' @param filename FinnGen file name, a string
 #' @param type FinnGen data type
@@ -93,15 +97,12 @@ get_finngen <- function(filename, type="summary_stats", overwrite=FALSE)
   url <- paste0(url, type)
 
   ## Download the data
-  fp <- get_web_file(url, overwrite = overwrite)
+  fp <- get_web_file(url, directory="finngen", overwrite = overwrite)
 
   return(fp)
 }
 
-#' get_downloads_dir
-#'
-#' I need a downloads directory, just above the package directory, for development to stop package
-#' building the large datasets. Hopefully will move this into inst/ext once the package is finished
+#' get_downloads_dir()
 #'
 #' @param subdir if provided with return the full file path to this subdirectory, within the main
 #'   downloads directory. If it does not exist, it will be created.
@@ -145,7 +146,7 @@ get_downloads_dir <- function(subdir=NA){
   }
 }
 
-#' get_b_file
+#' get_b_file()
 #'
 #' @param ancestry default is European 'EUR'
 #'

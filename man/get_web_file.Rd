@@ -2,9 +2,9 @@
 % Please edit documentation in R/get_files.R
 \name{get_web_file}
 \alias{get_web_file}
-\title{Gets a web based file - downloads into inst/extdata}
+\title{get_web_file()}
 \usage{
-get_web_file(url, directory = NA, unzip = FALSE, overwrite = FALSE)
+get_web_file(url, directory = NA, overwrite = FALSE)
 }
 \arguments{
 \item{url}{url to file to download, a string}
@@ -19,5 +19,5 @@ downloads directory)}
 a tibble containing the data
 }
 \description{
-Gets a web based file - downloads into inst/extdata
+Gets a web based file and downloads it into the packages downloads directory (inst/extdata)
 }

@@ -18,18 +18,24 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Installation
+You can install the latest version of MRLipidInfection in R using:
+```{r installation, eval=FALSE}
+remotes::install_github("mrcieu/gwasvcf")
+```
+
 ## Setup
 First we need to load the MRLipidInfection package and setup package requirements by calling
 'setupMRLipidInfection()'. At the first installation this will take some time as this will download
 the 1000 genomes LD reference panel into the package file structure and ensure that PLINK is
 installed locally.
 
-```{r setup, eval=TRUE}
+```{r setup, eval=FALSE}
 library(MRLipidInfection)
-library(dplyr)
 
 setupMRLipidInfection()
 ```
+
 ## Exposure data
 Next we must obtain the data for the exposure. We are interested whether exposure to lipid lowering
 medications influences risk of developing sepsis. This data is not readily available on a population
@@ -43,7 +49,7 @@ for HDL-C, LDL-C, nonHDL-C, TC and TG.
 First we will download the data for LDL cholesterol - **Warning** GWAS data file is large and will
 take some time to download.
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 # The URL for the GWAS summary statistics README document
 url_1 <- "http://csg.sph.umich.edu/willer/public/glgc-lipids2021/results/ancestry_specific/README.txt"
 
@@ -64,7 +70,7 @@ There are more than 47 million SNPs in the dataset. We now filter the GWAS data 
 circulating LDL cholesterol levels at a statisticsal significance of <5e-8. Reading this file can
 take a long time and so we can write out the result to a .csv file.
 
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 # Read the .gz data file
 d <- data.table::fread(fp_2) |>
 
@@ -88,8 +94,7 @@ readr::write_csv(d, fp_d)
 
 In the case we want to re-run the analysis at any point we can just read back in the smaller .csv
 file.
-
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 # The path to the significant exposure SNPs
 fp_d <- paste0(get_downloads_dir(subdir="glgc"), "/glgc_sig_snps.csv")
 
@@ -99,7 +104,7 @@ d <- readr::read_csv(fp_d, show_col_types=F)
 
 If we inspect the column names we see that they need some adjustment to ensure they are compatible
 with the TwoSampleMR package naming conventions.
-```{r, eval=TRUE}
+```{r, eval=FALSE}
 # The current column names
 colnames(d)
 

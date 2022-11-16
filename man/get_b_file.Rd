@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_files.R
 \name{get_b_file}
 \alias{get_b_file}
-\title{get_b_file}
+\title{get_b_file()}
 \usage{
 get_b_file(ancestry = "EUR")
 }
@@ -13,5 +13,5 @@ get_b_file(ancestry = "EUR")
 the file path to the ld reference panel 'B' files
 }
 \description{
-get_b_file
+get_b_file()
 }
