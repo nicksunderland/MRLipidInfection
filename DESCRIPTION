@@ -20,5 +20,9 @@ Imports:
 Suggests: 
     knitr,
     rmarkdown
-VignetteBuilder: knitr
+Remotes:
+    MRCIEU/genetics.binaRies,
+    mrcieu/gwasvcf
+VignetteBuilder: 
+    knitr
 URL: https://nicksunderland.github.io/MRLipidInfection/
