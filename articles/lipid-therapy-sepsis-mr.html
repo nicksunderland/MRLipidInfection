@@ -72,22 +72,22 @@ Sunderland</h4>
 
     
     
-<div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
+<div class="section level3">
+<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h3>
 <p>You can install the latest version of MRLipidInfection in R
 using:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"mrcieu/gwasvcf"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
-</h2>
+<div class="section level3">
+<h3 id="setup">Setup<a class="anchor" aria-label="anchor" href="#setup"></a>
+</h3>
 <p>First we need to load the MRLipidInfection package and setup package
 requirements by calling ‘setupMRLipidInfection()’. At the first
-installation this will take some time as this will download the 1000
-genomes LD reference panel into the package file structure and ensure
-that PLINK is installed locally.</p>
+installation this will take some time as this will download the <a href="http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tgz" class="external-link">1000 genomes LD
+reference panel</a> into the package file structure and ensure that <a href="https://www.cog-genomics.org/plink/" class="external-link">PLINK</a> is installed
+locally.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://nicksunderland.github.io/MRLipidInfection/">MRLipidInfection</a></span><span class="op">)</span></span>
 <span></span>
@@ -181,6 +181,77 @@ conventions.</p>
 <span></span>
 <span><span class="co"># Add 'LDL' as the exposure tag</span></span>
 <span><span class="va">exposure_data</span><span class="op">$</span><span class="va">exposure</span> <span class="op">&lt;-</span> <span class="st">"LDL"</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="cis-acting-hmg-coa-redictase-snps">Cis-acting HMG-CoA Redictase SNPs<a class="anchor" aria-label="anchor" href="#cis-acting-hmg-coa-redictase-snps"></a>
+</h3>
+<p>We will create a second set of exposure SNPs that will be subset of
+the SNPs that associate with LDL cholesterol levels. This subset of SNPs
+will be within a certain proximity (number of bases) to the HMG-CoA
+Reductatase gene. Data regarding the position of the HMG-CoA-R gene is
+freely available <a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=HMGCR" class="external-link">online</a>.
+The Lipid data from the GLGC uses the Genome Reference Consortium Human
+Reference 37 (GRCh37) and so we must use this when referring to the
+position of the HMG-CoA-R gene.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># The HMG-CoA-R gene is on chromosome 5, starts at base 746,32,993 and ends at base 74,657,941.</span></span>
+<span><span class="va">chrom</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
+<span><span class="va">start</span> <span class="op">&lt;-</span> <span class="fl">74632993</span></span>
+<span><span class="va">end</span>   <span class="op">&lt;-</span> <span class="fl">74657941</span></span>
+<span></span>
+<span><span class="co"># We want to capture SNPs near the HMG-CoA gene and so we must set a tolerance window either side in</span></span>
+<span><span class="co"># which to also search</span></span>
+<span><span class="va">tol</span> <span class="op">&lt;-</span> <span class="fl">3e5</span></span>
+<span></span>
+<span><span class="co"># Create a new dataset of SNPs close to the HMG-CoA gene</span></span>
+<span><span class="va">cis_hmg_exp_dat</span> <span class="op">&lt;-</span> <span class="va">exposure_data</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">.data</span><span class="op">$</span><span class="va">chr.exposure</span> <span class="op">==</span> <span class="va">chrom</span>,</span>
+<span>                <span class="va">.data</span><span class="op">$</span><span class="va">pos.exposure</span> <span class="op">&gt;</span> <span class="op">(</span><span class="va">start</span> <span class="op">-</span> <span class="va">tol</span><span class="op">)</span>,</span>
+<span>                <span class="va">.data</span><span class="op">$</span><span class="va">pos.exposure</span> <span class="op">&lt;</span> <span class="op">(</span><span class="va">end</span> <span class="op">+</span> <span class="va">tol</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span><span class="co"># </span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="clumping-lipid-exposure-snps">Clumping lipid exposure SNPs<a class="anchor" aria-label="anchor" href="#clumping-lipid-exposure-snps"></a>
+</h3>
+<p>Many of the SNPs will be highly correlated, i.e. be genetically
+linked and provide no additional information over and above the whole
+set of correlated SNPs. To reduce the number of SNPs to only those mopst
+significantly associated with lipid levels we use Linkage Disequilibrium
+clumping. <a href="https://kp4cd.org/sites/default/files/documents/LD_clumping.pdf" class="external-link">Clumping</a>
+reports the most significant genetic associations in a region in terms
+of a smaller number of “clumps” of genetically linked SNPs.</p>
+<p>The clumping procedure has several parameters: <code>clump_kb</code>
+<code>clump_r2</code> <code>clump_p</code> We will use the defaults
+except for <code>clump_r2</code> which we will set to 0.1 instead of the
+default of 0.001. This will clump SNPs that are correlated with an R^2
+correlation of &gt;0.1 - the SNP with the lower p-value will be
+removed.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">clump_r2</span> <span class="op">&lt;-</span> <span class="fl">0.1</span></span></code></pre></div>
+<p>We could do this on the Bristol IEU severs using the function
+<code>TwoSampleMR::clump_data</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">clumped_exp</span> <span class="op">&lt;-</span> <span class="va">exposure_data</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu">clump_data</span><span class="op">(</span>clump_r2 <span class="op">=</span> <span class="va">clump_r2</span><span class="op">)</span></span></code></pre></div>
+<p>Alternatively, we can do this locally using the 1000 Genomes
+Reference Panel and PLINK binary that we downloaded earlier.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">clumped_exp</span> <span class="op">&lt;-</span> <span class="fu">ieugwasr</span><span class="fu">::</span><span class="fu">ld_clump</span><span class="op">(</span></span>
+<span>  dat       <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>rsid<span class="op">=</span><span class="va">exposure_data</span><span class="op">$</span><span class="va">SNP</span>, pval<span class="op">=</span><span class="va">exposure_data</span><span class="op">$</span><span class="va">pval.exposure</span><span class="op">)</span>,</span>
+<span>  plink_bin <span class="op">=</span> <span class="fu">genetics.binaRies</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/genetics.binaRies/man/get_plink_binary.html" class="external-link">get_plink_binary</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  bfile     <span class="op">=</span> <span class="fu"><a href="../reference/get_b_file.html">get_b_file</a></span><span class="op">(</span><span class="op">)</span>, </span>
+<span>  clump_r2  <span class="op">=</span> <span class="va">clump_r2</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="outcome-data">Outcome data<a class="anchor" aria-label="anchor" href="#outcome-data"></a>
+</h2>
+<p>Sepsis GWAS…</p>
+<div class="section level3">
+<h3 id="to-be-continued">To be continued<a class="anchor" aria-label="anchor" href="#to-be-continued"></a>
+</h3>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
