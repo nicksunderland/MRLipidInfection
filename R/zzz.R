@@ -5,7 +5,7 @@
 #'
 setupMRLipidInfection <- function(){
 
-    message("Checking package data...")
+    message("Checking MRLipidInfection package data...")
 
     ## Force create
     get_downloads_dir()
@@ -16,11 +16,13 @@ setupMRLipidInfection <- function(){
     ## Check PLINK installed
     check_local_plink()
 
-    message("...checking package data complete")
+    message("...checking complete")
 
 }
 
 ld_ref_panel_data_check <- function(){
+
+    message("\tLD reference panel data:\t", appendLF=FALSE)
 
     ## Path to the downloads directory ld_reference_panel folder
     dl_dir <- get_downloads_dir(subdir = "ld_reference_panel")
@@ -59,9 +61,13 @@ ld_ref_panel_data_check <- function(){
             stop("There was an error downloading and/or extracting the 1000 Genomes LD Reference Panel files")
         }
     )
+
+    message("Done")
 }
 
 check_local_plink <- function(){
+
+    message("\tLocal PLINK binary:\t\t", appendLF=FALSE)
 
     genetics.binaRies_installed <- requireNamespace("genetics.binaRies", quietly = TRUE)
     if(!genetics.binaRies_installed){
@@ -69,9 +75,15 @@ check_local_plink <- function(){
     }
 
     plink_bin <- genetics.binaRies::get_plink_binary()
-    if(!file.exists(plink_bin)){
+    if(!file.exists(plink_bin))
+    {
         warning(paste0("Failed to find PLINK binary at:\n", plink_bin))
     }
+    else
+    {
+        message("Done")
+    }
+
 
 }
 

@@ -14,29 +14,34 @@ editor_options:
 ```{r init, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment  = "#>", 
+  eval     = FALSE,
+  cache    = FALSE
 )
 ```
 
 ## Installation
 You can install the latest version of MRLipidInfection in R using:
-```{r installation, eval=FALSE}
+```{r installation, eval = FALSE}
 remotes::install_github("nicksunderland/MRLipidInfection")
 ```
 
 ## Setup
 First we need to load the MRLipidInfection package and setup package requirements by calling
-'setupMRLipidInfection()'. At the first installation this will take some time as this will download
+`setupMRLipidInfection()`. At the first installation this will take some time as this will download
 the [1000 genomes LD reference panel](http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tgz) into the package
 file structure and ensure that [PLINK](https://www.cog-genomics.org/plink/) is installed locally.
 
-```{r setup, eval=FALSE}
+```{r setup}
 library(MRLipidInfection)
 
 setupMRLipidInfection()
 ```
 
+<br>
+
 # Exposure data
+## Lipid profile data
 Next we must obtain the data for the exposure. We are interested whether exposure to lipid lowering
 medications influences risk of developing sepsis. This data is not readily available on a population
 level and has many confounding factors. We will therefore estimate the effect of genetically proxied
@@ -49,148 +54,226 @@ for HDL-C, LDL-C, nonHDL-C, TC and TG.
 First we will download the data for LDL cholesterol - **Warning** GWAS data file is large and will
 take some time to download.
 
-```{r download_data, eval=FALSE}
+```{r download_data}
 # The URL for the GWAS summary statistics README document
-url_1 <- "http://csg.sph.umich.edu/willer/public/glgc-lipids2021/results/ancestry_specific/README.txt"
+url_rm <- "http://csg.sph.umich.edu/willer/public/glgc-lipids2021/results/ancestry_specific/README.txt"
 
 # Download README to the package downloads directory (subdirectory "glgc").
-get_web_file(url_1, directory="glgc")
+get_web_file(url_rm, directory="glgc")
 
-# The URL for the GWAS summary statistics data
-url_2 <- "http://csg.sph.umich.edu/willer/public/glgc-lipids2021/results/ancestry_specific/LDL_INV_EUR_HRC_1KGP3_others_ALL.meta.singlevar.results.gz"
+# The URLs for the GWAS summary statistics data
+lipids_gwas_urls <- list(
+  ldl    = "http://csg.sph.umich.edu/willer/public/glgc-lipids2021/results/ancestry_specific/LDL_INV_EUR_HRC_1KGP3_others_ALL.meta.singlevar.results.gz",
+  hdl    = "http://csg.sph.umich.edu/willer/public/glgc-lipids2021/results/ancestry_specific/HDL_INV_EUR_HRC_1KGP3_others_ALL.meta.singlevar.results.gz",
+  tc     = "http://csg.sph.umich.edu/willer/public/glgc-lipids2021/results/ancestry_specific/TC_INV_EUR_HRC_1KGP3_others_ALL.meta.singlevar.results.gz",
+  nonhdl = "http://csg.sph.umich.edu/willer/public/glgc-lipids2021/results/ancestry_specific/nonHDL_INV_EUR_HRC_1KGP3_others_ALL.meta.singlevar.results.gz",
+  tg     = "http://csg.sph.umich.edu/willer/public/glgc-lipids2021/results/ancestry_specific/logTG_INV_EUR_HRC_1KGP3_others_ALL.meta.singlevar.results.gz")
 
-# Download '.gz' file to the package downloads directory (subdirectory "glgc").
-fp_2 <- get_web_file(url_2, directory="glgc")
-
-# GWAS data file now at:
-fp_2
+# Download GLGC GWAS data to package downloads directory; return the file paths
+lipids_gwas_fps <- lapply(lipids_gwas_urls, get_web_file, directory="glgc")
+lipids_gwas_fps
 ```
 
 There are more than 47 million SNPs in the dataset. We now filter the GWAS data SNPs associated with
-circulating LDL cholesterol levels at a statisticsal significance of <5e-8. Reading this file can
+circulating LDL cholesterol levels at a statisticsal significance of `p<5e-8`. Reading this file can
 take a long time and so we can write out the result to a .csv file.
 
-```{r significant_snps, eval=FALSE}
-# Read the .gz data file
-d <- data.table::fread(fp_2) |>
+```{r significant_snps}
+# set significance level for filtering SNPs 
+p <- 5e-8
 
-  # Ensure that the pvalue is numeric 
-  dplyr::mutate(pvalue = as.numeric(.data$pvalue)) |>
+# Read the .gz data files and filter by significance level
+sig_snps <- purrr::map2(.x = lipids_gwas_fps,                   
+                        .y = names(lipids_gwas_fps),           
+                        .f = ~extract_significant_snps(.x, .y, pval=p, pval_col="pvalue", snp_col="rsID"))
 
-  # Filter for SNPs with a pvalue <5e-8
-  dplyr::filter(.data$pvalue < 5e-8) |>
-  
-  # Ensure unique SNPs
-  dplyr::distinct(.data$rsID, .keep_all=TRUE)
+# Add the name 
+sig_snps <- purrr::map2(.x = sig_snps, 
+                        .y = names(sig_snps),
+                        .f = ~ .x |> dplyr::mutate(phenotype = .y))
 
-utils::head(d)
+# View one of the tables:
+utils::head(sig_snps$ldl)
 
-# The path to write to (place it alongside the main data file in the downloads directory)
-fp_d <- paste0(get_downloads_dir(subdir="glgc"), "/glgc_sig_snps.csv")
+# The file path to the data in .csv format
+attr(sig_snps$ldl, "filepath")
 
-# Write out the significant SNPs
-readr::write_csv(d, fp_d)
-```
-
-In the case we want to re-run the analysis at any point we can just read back in the smaller .csv
-file.
-```{r read_data, eval=FALSE}
-# The path to the significant exposure SNPs
-fp_d <- paste0(get_downloads_dir(subdir="glgc"), "/glgc_sig_snps.csv")
-
-# Read back in
-d <- readr::read_csv(fp_d, show_col_types=F)
 ```
 
 If we inspect the column names we see that they need some adjustment to ensure they are compatible
 with the TwoSampleMR package naming conventions.
-```{r standardise, eval=FALSE}
+```{r standardise}
 # The current column names
-colnames(d)
+colnames(sig_snps$ldl)
 
-# Standardise the exposure data column names (set clump to FALSE as we will do this later)
-exposure_data <- TwoSampleMR::read_exposure_data(
-    filename          = fp_d,
-    clump             = FALSE,
-    sep               = ",",
-    snp_col           = "rsID",
-    beta_col          = "EFFECT_SIZE",
-    se_col            = "SE",
-    eaf_col           = "POOLED_ALT_AF",
-    effect_allele_col = "ALT",
-    other_allele_col  = "REF",
-    pval_col          = "pvalue",
-    samplesize_col    = "N",
-    chr_col           = "CHROM",
-    pos_col           = "POS_b37")
-
-# Add 'LDL' as the exposure tag
-exposure_data$exposure <- "LDL"
+# Standardise exposure data column names
+exposure_data <- purrr::map(.x = sig_snps,
+                            .f = ~ TwoSampleMR::format_data(
+                                    dat               = .x,
+                                    type              = "exposure",
+                                    phenotype_col     = "phenotype",
+                                    snp_col           = "rsID",
+                                    beta_col          = "EFFECT_SIZE",
+                                    se_col            = "SE",
+                                    eaf_col           = "POOLED_ALT_AF",
+                                    effect_allele_col = "ALT",
+                                    other_allele_col  = "REF",
+                                    pval_col          = "pvalue",
+                                    samplesize_col    = "N",
+                                    chr_col           = "CHROM",
+                                    pos_col           = "POS_b37"))
 ```
 
-## Cis-acting HMG-CoA Redictase SNPs
+## Cis-acting HMG-CoA Reductase SNPs
 We will create a second set of exposure SNPs that will be subset of the SNPs that associate with LDL
 cholesterol levels. This subset of SNPs will be within a certain proximity (number of bases) to the
-HMG-CoA Reductatase gene. Data regarding the position of the HMG-CoA-R gene is freely available
+HMG-CoA Reductase gene. Data regarding the position of the HMG-CoA-R gene is freely available
 [online](https://www.genecards.org/cgi-bin/carddisp.pl?gene=HMGCR). The Lipid data from the GLGC
 uses the Genome Reference Consortium Human Reference 37 (GRCh37) and so we must use this when
 referring to the position of the HMG-CoA-R gene.
 
-```{r cis_hmg, eval=FALSE}
+```{r cis_hmg}
 # The HMG-CoA-R gene is on chromosome 5, starts at base 746,32,993 and ends at base 74,657,941.
-chrom <- 5
-start <- 74632993
-end   <- 74657941
+chrom_hmg <- 5
+start_hmg <- 74632993
+end_hmg   <- 74657941
 
 # We want to capture SNPs near the HMG-CoA gene and so we must set a tolerance window either side in
 # which to also search
-tol <- 3e5
+## changed for testing, normal 3e5
+tol <- 3e6
 
 # Create a new dataset of SNPs close to the HMG-CoA gene
-cis_hmg_exp_dat <- exposure_data |>
-  dplyr::filter(.data$chr.exposure == chrom,
-                .data$pos.exposure > (start - tol),
-                .data$pos.exposure < (end + tol))
-  
-# 
+cis_exp_dat <- purrr::map(
+  .x = exposure_data,
+  .f = ~ .x |>
+    dplyr::mutate(id.exposure = dplyr::if_else(.data$chr.exposure == chrom_hmg &
+                                               .data$pos.exposure > (start_hmg - tol) &
+                                               .data$pos.exposure < (end_hmg   + tol), 
+                                               "cis_hmg", NA_character_)) |>
+    dplyr::filter(!is.na(id.exposure))
+  )
 ```
 
-## Clumping lipid exposure SNPs
+## Clumping SNPs
 Many of the SNPs will be highly correlated, i.e. be genetically linked and provide no additional
 information over and above the whole set of correlated SNPs. To reduce the number of SNPs to only
-those mopst significantly associated with lipid levels we use Linkage Disequilibrium clumping.
+those most significantly associated with lipid levels we use Linkage Disequilibrium clumping.
 [Clumping](https://kp4cd.org/sites/default/files/documents/LD_clumping.pdf) reports the most
 significant genetic associations in a region in terms of a smaller number of “clumps” of genetically
 linked SNPs.
 
-The clumping procedure has several parameters:
-`clump_kb`
-`clump_r2`
-`clump_p`
-We will use the defaults except for `clump_r2` which we will set to 0.1 instead
-of the default of 0.001. This will clump SNPs that are correlated with an R^2 correlation of >0.1 -
-the SNP with the lower p-value will be removed.
-```{r clumping_params, eval=FALSE}
-clump_r2 <- 0.1
-```
+SNPs that are correlated with an R^2^ greater than some value `clump_r2` will be clumped - i.e. the
+SNP with the lower p-value will be removed. The process is iterative and has several parameters:
+`clump_kb`, `clump_r2`, `clump_p`. We will use the defaults, except for `clump_r2` with the
+cis-HMG-CoA-R SNPs, which we will set to 0.1 instead of the default of 0.001.
 
 We could do this on the Bristol IEU severs using the function `TwoSampleMR::clump_data`. 
-```{r clumping_1, eval=FALSE}
-clumped_exp <- exposure_data |> 
-  TwoSampleMR::clump_data(clump_r2 = clump_r2)
+```{r clumping_1}
+# Only significant SNPs in close proximity to the HMG-CoA reductase gene
+#TODO: write function to deal with no results from clumping (at the minute the cis window is big)
+clump_r2 <- 0.1
+clumped_exp_dat <- purrr::map(.x = unname(cis_exp_dat), 
+                              .f = ~ TwoSampleMR::clump_data(
+                                dat      = .x,
+                                clump_r2 = clump_r2))
+names(clumped_exp_dat) <- names(cis_exp_dat)
 ```
 
 Alternatively, we can do this locally using the 1000 Genomes Reference Panel and PLINK binary that
 we downloaded earlier.
-```{r clumping, eval=FALSE}
-clumped_exp <- ieugwasr::ld_clump(
-  dat       = dplyr::tibble(rsid=exposure_data$SNP, pval=exposure_data$pval.exposure),
-  plink_bin = genetics.binaRies::get_plink_binary(),
-  bfile     = get_b_file(), 
-  clump_r2  = clump_r2
-)
+```{r clumping}
+clump_r2 <- 0.1
+clumped_exp_dat <- purrr::map(.x = unname(cis_exp_dat),
+                              .f = ~ ieugwasr::ld_clump(
+                                dat       = dplyr::tibble(rsid=.x$SNP,
+                                                          pval=.x$pval.exposure),
+                                plink_bin = genetics.binaRies::get_plink_binary(),
+                                bfile     = get_b_file(), 
+                                clump_r2  = clump_r2))
+names(clumped_exp_dat) <- names(cis_exp_dat)
 ```
+
+<br>
+
 # Outcome data
-Sepsis GWAS...
+## Sepsis
+The outcome we are interested in is sepsis. There are several GWAS relating whether a patient
+develops sepsis to their underlying SNPs. Several of these studies are available on the [IEU GWAS
+database](https://gwas.mrcieu.ac.uk) which can be queried using either the `TwoSampleMR` or
+`ieugwasr` R packages.
+```{r outcome}
+# List of available GWAS summary statistics
+available_gwas <- ieugwasr::gwasinfo() |>
+  
+  # Filter for those that mention 'sepsis' in the 'trait' description column
+  dplyr::filter(grepl("sepsis|pneumonia", .data$trait, ignore.case=TRUE))
+
+# We will pick one
+outcome_gwas_id <- "ieu-b-4980"
+
+# View
+available_gwas[available_gwas$id == outcome_gwas_id, ]
+```
+## Extracting outcome data
+Having identified the GWAS summary statistics we next need to extract the data for our SNPs of
+interest (those that are highly predictive of the exposure, in this case LDL cholesterol).
+```{r outcome_extracting}
+# The cisHMG-CoA SNPs won't necessarily all be within the group of SNPs for the whole genome.
+##all(clumped_hmg_exp$SNP %in% clumped_exp$SNP)
+
+# Extract data for cis-HMG-CoA SNPs
+outcome_data <- purrr::map(.x = clumped_exp_dat,
+                           .f = ~ TwoSampleMR::extract_outcome_data(
+                              snps            = .x$SNP,
+                              outcomes        = outcome_gwas_id,
+                              proxies         = TRUE,
+                              rsq             = 0.8,
+                              align_alleles   = 1,
+                              palindromes     = 1,
+                              maf_threshold   = 0.3,
+                              access_token    = ieugwasr::check_access_token(),
+                              splitsize       = 10000,
+                              proxy_splitsize = 500))
+names(outcome_data) <- names(clumped_exp_dat)
+```
+## Obtaining outcome data _not_ on the IEU GWAS database
+How to extract outcome data from other sources and find proxy SNPs
+```{r outcome_other_source}
+```
+
+<br>
+
+# Harmonising
+We have the effects of the (significant) SNPs on LDL levels and the effect of these same SNPs on the
+outcome sepsis. However, it is important to harmonise the effects. This means that the effect of a
+SNP on the exposure and the effect of that SNP on the outcome must each correspond to the same
+allele (i.e. the A&Ts and C&Gs cannot be the wrong way round). 
+*Note* The IEU GWAS database contains data that is already harmonised. For more information on
+[harmonising](https://mrcieu.github.io/TwoSampleMR/articles/harmonise.html).
+```{r harmonise}
+# Harmonise the data for the LDL SNPs across the whole genome
+harm_dat <- purrr::map2(.x = clumped_exp_dat,
+                        .y = outcome_data,
+                        .f = ~ TwoSampleMR::harmonise_data(.x, .y))
+```   
+
+<br>
+
+# Two Sample Mendelian Randomisation
+The whole point is to assess the weight influence of the SNPs on the outcome
+```{r mr}
+# The MR result using SNPs from across the genome
+res_dat <- purrr::map(.x = harm_dat, 
+                      .f = ~ TwoSampleMR::mr(.x))
+```
+
+## Plotting the result
+```{r plot}
+plots <- purrr::map2(.x = res_dat, 
+                     .y = harm_dat,
+                     .f = ~ TwoSampleMR::mr_scatter_plot(.x, .y))
+plots
+```
 
 ## To be continued
