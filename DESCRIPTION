@@ -19,7 +19,11 @@ Imports:
     genetics.binaRies,
     gwasvcf,
     httr,
-    readr
+    ieugwasr,
+    methods,
+    purrr,
+    readr,
+    TwoSampleMR
 Suggests: 
     knitr,
     rmarkdown

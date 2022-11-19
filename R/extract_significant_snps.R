@@ -4,8 +4,8 @@
 #' @param pval p-value filter (values less than this are kept)
 #' @param pval_col the name of the column holding the p-value
 #' @param snp_col the name of the column holding the snp id
-#' @param csv_out a name to label the output .csv with, default is to use the filepath filename
 #' @param overwrite whether or not to overwrite the cache .csv file
+#' @param name the name of the exposure / outcome
 #'
 #' @importFrom dplyr mutate filter distinct .data
 #' @importFrom data.table fread
@@ -14,18 +14,18 @@
 #' @return the data table; and attribute file path to the filtered .csv file
 #' @export
 #'
-extract_significant_snps <- function(filepath, csv_out, pval, pval_col, snp_col, overwrite=FALSE)
+extract_significant_snps <- function(filepath, name=NULL, pval=5e-8, pval_col="pvalue", snp_col="SNP", overwrite=FALSE)
 {
     message(paste0("Extracting significant SNPs from: ", basename(filepath)))
 
     # If csv_out name was not set, set to filename
-    if(is.null(csv_out))
+    if(is.null(name))
     {
-        csv_out <- basename(filepath)
+        name <- basename(filepath)
     }
 
     # The path to write to (place it alongside the main data file)
-    fp <- paste0(dirname(filepath), "/sig_snps_", csv_out, ".csv")
+    fp <- paste0(dirname(filepath), "/sig_snps_", name, ".csv")
 
     # If file already exists
     if(file.exists(fp) & !overwrite)
@@ -53,8 +53,14 @@ extract_significant_snps <- function(filepath, csv_out, pval, pval_col, snp_col,
         readr::write_csv(d, fp)
     }
 
-    # Attached the filepath attribute
+    # Set the exposure name
+    d$exposure  <- name
+    d$phenotype <- name
+    d$id.exposure <- name
+
+    # Attached the filepath and name attribute
     attr(d, "filepath") <- fp
+    attr(d, "name") <- name
 
     # Return the data
     return(d)

@@ -6,23 +6,23 @@
 \usage{
 extract_significant_snps(
   filepath,
-  pval,
-  pval_col,
-  snp_col,
-  csv_out = NULL,
+  name = NULL,
+  pval = 5e-08,
+  pval_col = "pvalue",
+  snp_col = "SNP",
   overwrite = FALSE
 )
 }
 \arguments{
 \item{filepath}{a file path to extract from}
 
+\item{name}{the name of the exposure / outcome}
+
 \item{pval}{p-value filter (values less than this are kept)}
 
 \item{pval_col}{the name of the column holding the p-value}
 
 \item{snp_col}{the name of the column holding the snp id}
-
-\item{csv_out}{a name to label the output .csv with, default is to use the filepath filename}
 
 \item{overwrite}{whether or not to overwrite the cache .csv file}
 }
