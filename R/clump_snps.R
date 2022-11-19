@@ -6,7 +6,7 @@
 #' @param clump_r2 Clumping r2 cutoff.
 #' @param clump_p1 Clumping sig level for index SNPs, default is 1
 #' @param clump_p2 Clumping sig level for secondary SNPs, default is 1.
-#' @param popSuper-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS,
+#' @param pop Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS,
 #'   AFR, AMR. 'legacy' also available - which is a previously used verison of the EUR panel with a
 #'   slightly different set of markers
 #'
