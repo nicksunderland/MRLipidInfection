@@ -20,12 +20,12 @@ Imports:
     ggplot2,
     gwasvcf,
     httr,
+    ieugwasr,
     methods,
     purrr,
     readr,
     scales,
-    TwoSampleMR,
-    ieugwasr
+    TwoSampleMR
 Suggests: 
     knitr,
     rmarkdown
@@ -33,11 +33,7 @@ Remotes:
     mrcieu/gwasvcf,
     MRCIEU/genetics.binaRies,
     mrcieu/ieugwasr,
-    MRCIEU/TwoSampleMR,
-    gqi/MRMix,
-    mrcieu/MRInstruments,
-    MRPRESSO=rondolab/MR-PRESSO,
-    WSpiller/RadialMR
+    MRCIEU/TwoSampleMR
 VignetteBuilder: 
     knitr
 URL: https://nicksunderland.github.io/MRLipidInfection/
