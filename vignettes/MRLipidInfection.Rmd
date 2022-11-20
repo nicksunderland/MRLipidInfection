@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
   message  = FALSE,
   warning  = FALSE, 
   echo     = TRUE,
-  eval     = FALSE,
+  #eval     = TRUE,
   cache    = FALSE
 )
 ```
@@ -35,7 +35,7 @@ the [1000 genomes LD reference panel](http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tg
 file structure and ensure that [PLINK](https://www.cog-genomics.org/plink/) is installed locally. If
 you plan to use only the IEU servers for LD processing you can skip these downloads.
 
-```{r setup}
+```{r setup, eval = FALSE}
 library(MRLipidInfection)
 
 setupMRLipidInfection(skip_local_download=TRUE)
@@ -58,7 +58,7 @@ use the data excluding the UK BioBank to avoid overlap of the exposure and outco
 First we will download the data for LDL cholesterol - **Warning** The GWAS data files are large and
 will take some time to download.
 
-```{r download_data}
+```{r download_data, eval = FALSE}
 # The URL for the GWAS summary statistics README document
 url_rm <- "http://csg.sph.umich.edu/willer/public/glgc-lipids2021/results/ancestry_specific/README.txt"
 
@@ -84,7 +84,7 @@ with circulating lipid levels at a statistical significance of `p<5e-8`. Reading
 a long time and so we can cache (write out) the result to a .csv file within the package structure
 so that if we need to run things again it is much quicker.
 
-```{r significant_snps}
+```{r significant_snps, eval = FALSE}
 # set significance level for filtering SNPs 
 p <- 5e-8
 
@@ -100,7 +100,7 @@ str(sig_snps[[1]])
 If we inspect the column names we see that they need some adjustment to ensure they are compatible
 with the TwoSampleMR package naming conventions. `TwoSampleMR` provides a function to appropriately
 rename the columns: `TwoSampleMR::format_data`.
-```{r standardise}
+```{r standardise, eval = FALSE}
 # The current column names
 colnames(sig_snps$ldl)
 
@@ -134,7 +134,7 @@ referring to the position of the genes. First I create a list of objects of clas
 simple custom S4 class containing gene information. In addition, we will look at all of the SNPs
 across the whole genome that associate with lipid profile components.
 
-```{r cis_hmg}
+```{r cis_hmg, eval = FALSE}
 # The HMG-CoA-R, NPC1L1, and PCSK9 genes; set the 'cis' base tolerance here.
 genes_list = list(
   Gene(name="HMGCR",  chromosome=5, start=74632993, end=74657941, cis_tol=1e5),
@@ -162,7 +162,7 @@ we will set more leniently, instead of the default of 0.001, due to the fact we 
 cis-acting SNPs which will be more correlated by virtue of their proximity to the genes of interest.
 
 We could do this on the Bristol IEU severs using the function `TwoSampleMR::clump_data`. 
-```{r clumping_1}
+```{r clumping_1, eval = FALSE}
 # Set the clumping parameters for the different scenarios
 clump_args <- data.frame("exposure" = names(cis_exp_dat)) |>
   dplyr::mutate(clump_r2 = dplyr::case_when(grepl("HMGCR",       exposure) ~ 0.2, 
@@ -189,7 +189,7 @@ The outcome we are interested in is sepsis. There are several GWAS relating whet
 develops sepsis to their underlying SNPs. Several of these studies are available on the [IEU GWAS
 database](https://gwas.mrcieu.ac.uk) which can be queried using either the `TwoSampleMR` or
 `ieugwasr` R packages.
-```{r outcome}
+```{r outcome, eval = FALSE}
 # List of available GWAS summary statistics
 available_gwas <- ieugwasr::gwasinfo() |>
   
@@ -205,7 +205,7 @@ outcome_gwas_id <- c("ieu-b-5086", "ieu-b-5088", "ieu-b-4982",
 Having identified the GWAS summary statistics we next need to extract the data for our SNPs of
 interest (those that are highly predictive of the exposure, in this case the components of the blood
 lipid profile).
-```{r outcome_extracting}
+```{r outcome_extracting, eval = FALSE}
 # Extract data for cis-gene SNPs
 outcome_data <- purrr::map(.x = clumped_exp_dat,
                            .f = ~ TwoSampleMR::extract_outcome_data(
@@ -230,7 +230,7 @@ a SNP on the exposure and the effect of that SNP on the outcome must each corres
 allele (i.e. the A&Ts and C&Gs cannot be the wrong way round). *Note* The IEU GWAS database contains
 data that is already harmonised. For more information on
 [harmonising](https://mrcieu.github.io/TwoSampleMR/articles/harmonise.html).
-```{r harmonise}
+```{r harmonise, eval = FALSE}
 # Filter out the Gene:Lipid SNP associations with no significant SNPs
 zero_snps <- purrr::map_lgl(clumped_exp_dat, ~ nrow(.x)==0)
 
@@ -243,14 +243,14 @@ harm_dat <- purrr::map2(.x = clumped_exp_dat[!zero_snps],
 <br>
 
 # Two Sample Mendelian Randomisation
-```{r mr}
+```{r mr, eval = FALSE}
 # The MR result using SNPs from across the genome
 res_dat <- purrr::map(.x = harm_dat, 
                       .f = ~ TwoSampleMR::mr(.x))
 ```
 
 ## Effects and significance
-```{r weighted_effects}
+```{r weighted_effects, eval = FALSE}
 # Prepare the data
 plot_dat <- purrr::map_df(res_dat, ~ .x |> 
                             dplyr::select(exposure, outcome, method, b, pval) |>
@@ -275,7 +275,7 @@ To be completed...
 
 # Plots
 ## Heatmap
-```{r plot_heatmap, include=TRUE, echo=TRUE, fig.height=35, fig.width=7}
+```{r plot_heatmap, include=TRUE, echo=TRUE, fig.height=35, fig.width=7, eval = FALSE}
 library(ggplot2)
 
 # Set the significance cutoff
@@ -304,14 +304,14 @@ p <- ggplot(plot_dat, aes(x=lipid, y=gene)) +
          y        = "Gene") +
   facet_wrap(~outcome, ncol = 1, scales='free')
 ```
-```{r write_heatmap, include=FALSE}
+```{r write_heatmap, include=FALSE, eval = FALSE}
 # Write out the figure (size )
 png(file="figures/mr_heatmap.png", width=7, height=35, units="in", res=100)
 p
 dev.off()
 ```
 
-```{r show_heatmap, fig.align="center", eval=TRUE, echo=FALSE}
+```{r show_heatmap, fig.align="center", eval=TRUE, echo=FALSE, eval = TRUE}
 # Show figure
 knitr::include_graphics("figures/mr_heatmap.png")
 ```
@@ -321,14 +321,14 @@ knitr::include_graphics("figures/mr_heatmap.png")
 ## MR scatter plots
 
 to be added
-```{r plot_mr_scatter, include=FALSE, echo=TRUE}
+```{r plot_mr_scatter, include=FALSE, echo=TRUE, eval = FALSE}
 # Plots the MR scatter plots
 scatter_plots <- purrr::map2(.x = res_dat, 
                              .y = harm_dat,
                              .f = ~ TwoSampleMR::mr_scatter_plot(.x, .y))
 ```
 
-```{r write_mr_scatter, include=FALSE, echo=FALSE}
+```{r write_mr_scatter, include=FALSE, echo=FALSE, eval = FALSE}
 # Unlist plots
 scatter_plots <- unlist(scatter_plots, recursive=FALSE)
 
@@ -340,7 +340,7 @@ scatter_plots <- unlist(scatter_plots, recursive=FALSE)
 # }
 ```
 
-```{r show_mr_scatter, fig.align="center", eval=TRUE, echo=FALSE, results='asis'}
+```{r show_mr_scatter, fig.align="center", eval=TRUE, echo=FALSE, results='asis', eval = FALSE}
 # Get the file paths
 # files <- list.files(path="figures", pattern="mr_scatter_plot_\\d+.png", full.names=TRUE)
 # 
