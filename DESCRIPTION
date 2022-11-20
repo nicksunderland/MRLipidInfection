@@ -17,12 +17,14 @@ Imports:
     devtools,
     dplyr,
     genetics.binaRies,
+    ggplot2,
     gwasvcf,
     httr,
     ieugwasr,
     methods,
     purrr,
     readr,
+    scales,
     TwoSampleMR
 Suggests: 
     knitr,

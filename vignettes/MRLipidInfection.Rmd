@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
   message  = FALSE,
   warning  = FALSE, 
   echo     = TRUE,
-  eval     = TRUE,
+  eval     = FALSE,
   cache    = FALSE,
   fig.width=7, fig.height=5
   # ,
@@ -309,7 +309,7 @@ ggplot(plot_dat, aes(x=lipid, y=gene)) +
          subtitle = "Colour represents p-value, with bright green colour at cut-off p<0.05",
          x        ="Lipid component", 
          y        = "Gene") +
-  facet_wrap(~outcome, ncol = 1)
+  facet_wrap(~outcome, ncol = 1, scales='free')
 ```
 
 <br>
