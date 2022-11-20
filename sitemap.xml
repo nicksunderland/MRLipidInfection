@@ -10,16 +10,25 @@
     <loc>https://nicksunderland.github.io/MRLipidInfection/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://nicksunderland.github.io/MRLipidInfection/articles/index.html</loc>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/articles/MRLipidInfection.html</loc>
   </url>
   <url>
-    <loc>https://nicksunderland.github.io/MRLipidInfection/articles/lipid-therapy-sepsis-mr.html</loc>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/articles/index.html</loc>
   </url>
   <url>
     <loc>https://nicksunderland.github.io/MRLipidInfection/authors.html</loc>
   </url>
   <url>
     <loc>https://nicksunderland.github.io/MRLipidInfection/index.html</loc>
+  </url>
+  <url>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/Gene-class.html</loc>
+  </url>
+  <url>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/clump_snps.html</loc>
+  </url>
+  <url>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/create_cis_gene_exposure.html</loc>
   </url>
   <url>
     <loc>https://nicksunderland.github.io/MRLipidInfection/reference/extract_significant_snps.html</loc>
