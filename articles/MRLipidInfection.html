@@ -332,10 +332,7 @@ that is already harmonised. For more information on <a href="https://mrcieu.gith
 <span>  <span class="co"># Just look at IVW for now</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">method</span> <span class="op">==</span> <span class="st">"Inverse variance weighted"</span>, <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="co"># Deselect to make table nicer</span></span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">method</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># View MR estimate table</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">plot_dat</span>, n<span class="op">=</span><span class="fl">200</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">method</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="interpretation">Interpretation<a class="anchor" aria-label="anchor" href="#interpretation"></a>
@@ -359,7 +356,7 @@ targets has no significant effect on the risk of developing sepsis.</p>
 <span><span class="va">p_val_cutoff</span> <span class="op">=</span> <span class="fl">0.05</span></span>
 <span></span>
 <span><span class="co"># Plot heat map of lipid component against lipid regulation genes</span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">plot_dat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">lipid</span>, y<span class="op">=</span><span class="va">gene</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">plot_dat</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">lipid</span>, y<span class="op">=</span><span class="va">gene</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="co"># Set the fill tile colour to the p-value</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="external-link">geom_tile</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill<span class="op">=</span><span class="va">pval</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>    <span class="co"># Set the text to the beta value</span></span>
@@ -380,16 +377,13 @@ targets has no significant effect on the risk of developing sepsis.</p>
 <span>         x        <span class="op">=</span><span class="st">"Lipid component"</span>, </span>
 <span>         y        <span class="op">=</span> <span class="st">"Gene"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">outcome</span>, ncol <span class="op">=</span> <span class="fl">1</span>, scales<span class="op">=</span><span class="st">'free'</span><span class="op">)</span></span></code></pre></div>
+<p><img src="figures/mr_heatmap.png" width="350" style="display: block; margin: auto;"></p>
 <p><br></p>
 </div>
 <div class="section level3">
-<h3 id="mr-scatter">MR scatter<a class="anchor" aria-label="anchor" href="#mr-scatter"></a>
+<h3 id="mr-scatter-plots">MR scatter plots<a class="anchor" aria-label="anchor" href="#mr-scatter-plots"></a>
 </h3>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Plots the MR scatter plots</span></span>
-<span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">map2</a></span><span class="op">(</span>.x <span class="op">=</span> <span class="va">res_dat</span>, </span>
-<span>            .y <span class="op">=</span> <span class="va">harm_dat</span>,</span>
-<span>            .f <span class="op">=</span> <span class="op">~</span> <span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr_scatter_plot.html" class="external-link">mr_scatter_plot</a></span><span class="op">(</span><span class="va">.x</span>, <span class="va">.y</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>to be added</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
