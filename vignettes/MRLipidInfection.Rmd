@@ -266,8 +266,8 @@ plot_dat <- purrr::map_df(res_dat, ~ .x |>
 ```
 
 ## Interpretation
-Genetically proxied inhibition of important lipid metabolism drug targets has no significant effect
-on the risk of developing sepsis.
+Genetically proxied inhibition of important lipid metabolism drug targets has no consistent effect
+on the risk of developing sepsis across multiple cohort.  
 
 To be completed...
 

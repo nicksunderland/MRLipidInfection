@@ -16,5 +16,5 @@ remotes::install_github("nicksunderland/MRLipidInfection")
 
 ## Projects
 
-Please see the “Articles” tab.
+Please see the “Getting started” tab for initial analysis run.
 <https://nicksunderland.github.io/MRLipidInfection/>
