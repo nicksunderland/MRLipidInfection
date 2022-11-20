@@ -33,7 +33,11 @@ Remotes:
     mrcieu/gwasvcf,
     MRCIEU/genetics.binaRies,
     mrcieu/ieugwasr,
-    MRCIEU/TwoSampleMR
+    MRCIEU/TwoSampleMR,
+    gqi/MRMix,
+    mrcieu/MRInstruments,
+    MRPRESSO=rondolab/MR-PRESSO,
+    WSpiller/RadialMR
 VignetteBuilder: 
     knitr
 URL: https://nicksunderland.github.io/MRLipidInfection/
