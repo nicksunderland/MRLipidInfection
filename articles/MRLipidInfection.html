@@ -314,7 +314,7 @@ that is already harmonised. For more information on <a href="https://mrcieu.gith
 <h2 id="two-sample-mendelian-randomisation">Two Sample Mendelian Randomisation<a class="anchor" aria-label="anchor" href="#two-sample-mendelian-randomisation"></a>
 </h2>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># The MR result using SNPs from across the genome</span></span>
+<code class="sourceCode R"><span><span class="co"># The MR result for all of the different scenarios</span></span>
 <span><span class="va">res_dat</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span>.x <span class="op">=</span> <span class="va">harm_dat</span>, </span>
 <span>                      .f <span class="op">=</span> <span class="op">~</span> <span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr.html" class="external-link">mr</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
