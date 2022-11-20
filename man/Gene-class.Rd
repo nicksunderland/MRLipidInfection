@@ -25,5 +25,7 @@ Gene class
 \item{\code{end}}{numeric. The end (number of bases).}
 
 \item{\code{cis_tol}}{when defining SNPs on a gene, set a tolerance of how many bases either side of the gene}
+
+\item{\code{genome_wide}}{this is usually FALSE, if TRUE this is treated as a object placeholder and will refer to the 'whole genome'}
 }}
 

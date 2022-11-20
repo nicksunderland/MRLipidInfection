@@ -4,7 +4,10 @@
 \alias{setupMRLipidInfection}
 \title{setupMRLipidInfection}
 \usage{
-setupMRLipidInfection()
+setupMRLipidInfection(skip_local_download = TRUE)
+}
+\arguments{
+\item{skip_local_download}{whether to skip the LD reference panel and PLINK downloads}
 }
 \value{
 side effect setup functions (see below)

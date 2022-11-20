@@ -6,6 +6,7 @@
 #' @slot start numeric. The start (number of bases).
 #' @slot end numeric. The end (number of bases).
 #' @slot cis_tol when defining SNPs on a gene, set a tolerance of how many bases either side of the gene
+#' @slot genome_wide this is usually FALSE, if TRUE this is treated as a object placeholder and will refer to the 'whole genome'
 #'
 #' @importFrom methods new
 #'
@@ -19,6 +20,7 @@ Gene <- setClass(
 
   # Class variables
   representation(
+    genome_wide = "logical",
     name  = "character",
     assembly = "character",
     chromosome = "numeric",
@@ -28,6 +30,7 @@ Gene <- setClass(
 
   # Constructor
   prototype(
+    genome_wide = FALSE,
     name  = NA_character_,
     assembly = "GRCh37",
     chromosome = NA_real_,

@@ -1,20 +1,29 @@
 #' setupMRLipidInfection
 #'
+#' @param skip_local_download whether to skip the LD reference panel and PLINK downloads
+#'
 #' @return side effect setup functions (see below)
 #' @export
 #'
-setupMRLipidInfection <- function(){
+setupMRLipidInfection <- function(skip_local_download=TRUE){
 
     message("Checking MRLipidInfection package data...")
 
     ## Force create
     get_downloads_dir()
 
-    ## Check and download the LD reference panel
-    ld_ref_panel_data_check()
+    if(!skip_local_download)
+    {
+        ## Check and download the LD reference panel
+        ld_ref_panel_data_check()
 
-    ## Check PLINK installed
-    check_local_plink()
+        ## Check PLINK installed
+        check_local_plink()
+    }
+    else
+    {
+        message("Skipping LD reference panel and PLINK downloads")
+    }
 
     message("...checking complete")
 

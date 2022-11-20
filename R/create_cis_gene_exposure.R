@@ -33,11 +33,21 @@ create_cis_gene_exposure <- function(exposure_data, gene){
     # Filter the exposures on the gene locations
     d <- purrr::pmap(.l= list(x=exp, y=gen, z=name_vec),
                      .f = function(x,y,z){
-                       x |>
-                       dplyr::filter(.data$chr.exposure == y@chromosome,
-                                     .data$pos.exposure > (y@start - y@cis_tol) &
-                                     .data$pos.exposure < (y@end   + y@cis_tol)) |>
-                       dplyr::mutate(exposure = z)})
+
+                       # Set the exposure name
+                       x <- x |> dplyr::mutate(exposure = z)
+
+                       # If not a genome_wide Gene object placeholder, do some SNP filtering
+                       if(!y@genome_wide)
+                       {
+                          x <- x |>
+                           dplyr::filter(.data$chr.exposure == y@chromosome,
+                                         .data$pos.exposure > (y@start - y@cis_tol) &
+                                         .data$pos.exposure < (y@end   + y@cis_tol))
+                       }
+
+                       return(x)
+                      })
 
     # Name the combinations
     names(d) <- name_vec

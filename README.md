@@ -11,7 +11,7 @@ techniques.
 You can install the latest version of MRLipidInfection in R using:
 
 ``` r
-remotes::install_github("mrcieu/gwasvcf")
+remotes::install_github("nicksunderland/MRLipidInfection")
 ```
 
 ## Projects

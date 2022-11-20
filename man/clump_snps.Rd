@@ -15,21 +15,26 @@ clump_snps(
 )
 }
 \arguments{
-\item{exposure_data}{a data.table consistent with output from TwoSampleMR::format_data (or named list of them)}
+\item{exposure_data}{a data.table consistent with output from TwoSampleMR::format_data; must be a
+named list}
 
 \item{do_local}{whether to do the processing on the local computer or IEU servers}
 
-\item{clump_kb}{Clumping window, default is 10000.}
+\item{clump_kb}{Clumping window, default is 10000. (vector of length = length(exposure_data); or
+1, in which case it will be recycled)}
 
-\item{clump_r2}{Clumping r2 cutoff.}
+\item{clump_r2}{Clumping r2 cutoff.  (vector of length = length(exposure_data); or 1, in which
+case it will be recycled)}
 
-\item{clump_p1}{Clumping sig level for index SNPs, default is 1}
+\item{clump_p1}{Clumping sig level for index SNPs, default is 1.  (vector of length =
+length(exposure_data); or 1, in which case it will be recycled)}
 
-\item{clump_p2}{Clumping sig level for secondary SNPs, default is 1.}
+\item{clump_p2}{Clumping sig level for secondary SNPs, default is 1.  (vector of length =
+length(exposure_data); or 1, in which case it will be recycled)}
 
-\item{popSuper-population}{to use as reference panel. Default = "EUR". Options are EUR, SAS, EAS,
-AFR, AMR. 'legacy' also available - which is a previously used verison of the EUR panel with a
-slightly different set of markers}
+\item{pop}{Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS,
+EAS, AFR, AMR. 'legacy' also available - which is a previously used verison of the EUR panel
+with a slightly different set of markers}
 }
 \value{
 clumped data.table, or list of them
