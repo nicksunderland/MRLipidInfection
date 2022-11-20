@@ -18,11 +18,7 @@ knitr::opts_chunk$set(
   warning  = FALSE, 
   echo     = TRUE,
   eval     = FALSE,
-  cache    = FALSE,
-  fig.width=7, fig.height=5
-  # ,
-  # fig.width=700, fig.height=700,
-  # out.width="100%", out.height="100%"   # try out.width="200px", out.height="200px"
+  cache    = FALSE
 )
 ```
 
@@ -267,9 +263,6 @@ plot_dat <- purrr::map_df(res_dat, ~ .x |>
   dplyr::filter(method == "Inverse variance weighted", ) |>
   # Deselect to make table nicer
   dplyr::select(-method)
-
-# View MR estimate table
-print(plot_dat, n=200)
 ```
 
 ## Interpretation
@@ -289,7 +282,7 @@ library(ggplot2)
 p_val_cutoff = 0.05
 
 # Plot heat map of lipid component against lipid regulation genes
-ggplot(plot_dat, aes(x=lipid, y=gene)) +
+p <- ggplot(plot_dat, aes(x=lipid, y=gene)) +
     # Set the fill tile colour to the p-value
     geom_tile(aes(fill=pval)) + 
     # Set the text to the beta value
@@ -311,13 +304,46 @@ ggplot(plot_dat, aes(x=lipid, y=gene)) +
          y        = "Gene") +
   facet_wrap(~outcome, ncol = 1, scales='free')
 ```
+```{r write_heatmap, include=FALSE}
+# Write out the figure (size )
+png(file="figures/mr_heatmap.png", width=7, height=35, units="in", res=100)
+p
+dev.off()
+```
+
+```{r show_heatmap, fig.align="center", eval=TRUE, echo=FALSE}
+# Show figure
+knitr::include_graphics("figures/mr_heatmap.png")
+```
 
 <br>
 
-## MR scatter
-```{r plot_mr_scatter, include=TRUE, echo=TRUE}
+## MR scatter plots
+
+to be added
+```{r plot_mr_scatter, include=FALSE, echo=TRUE}
 # Plots the MR scatter plots
-purrr::map2(.x = res_dat, 
-            .y = harm_dat,
-            .f = ~ TwoSampleMR::mr_scatter_plot(.x, .y))
+scatter_plots <- purrr::map2(.x = res_dat, 
+                             .y = harm_dat,
+                             .f = ~ TwoSampleMR::mr_scatter_plot(.x, .y))
+```
+
+```{r write_mr_scatter, include=FALSE, echo=FALSE}
+# Unlist plots
+scatter_plots <- unlist(scatter_plots, recursive=FALSE)
+
+# Write out the figures
+# for(i in 1:3)
+# {
+#     get(scatter_plots[[i]] 
+#     ggplot2::ggsave(paste0("figures/mr_scatter_plot_", i, ".png"), width=7, height=5, units="in", dpi=100)
+# }
+```
+
+```{r show_mr_scatter, fig.align="center", eval=TRUE, echo=FALSE, results='asis'}
+# Get the file paths
+# files <- list.files(path="figures", pattern="mr_scatter_plot_\\d+.png", full.names=TRUE)
+# 
+# # Show figure - n.b. knitr::include_graphics doesn't work in a loop so need to do manually (https://stackoverflow.com/questions/51268623/insert-images-using-knitrinclude-graphics-in-a-for-loop)
+# cat(paste0("![](", files, ")"), "\n")
 ```
