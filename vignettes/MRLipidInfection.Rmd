@@ -244,7 +244,7 @@ harm_dat <- purrr::map2(.x = clumped_exp_dat[!zero_snps],
 
 # Two Sample Mendelian Randomisation
 ```{r mr, eval = FALSE}
-# The MR result using SNPs from across the genome
+# The MR result for all of the different scenarios
 res_dat <- purrr::map(.x = harm_dat, 
                       .f = ~ TwoSampleMR::mr(.x))
 ```
