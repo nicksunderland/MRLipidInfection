@@ -18,7 +18,6 @@ Imports:
     dplyr,
     genetics.binaRies,
     ggplot2,
-    gwasvcf,
     httr,
     ieugwasr,
     methods,
@@ -30,7 +29,6 @@ Suggests:
     knitr,
     rmarkdown
 Remotes:
-    mrcieu/gwasvcf,
     MRCIEU/genetics.binaRies,
     mrcieu/ieugwasr,
     MRCIEU/TwoSampleMR
