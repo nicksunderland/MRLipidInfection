@@ -30,8 +30,8 @@ Suggests:
     knitr,
     rmarkdown
 Remotes:
-    MRCIEU/genetics.binaRies,
     mrcieu/gwasvcf,
+    MRCIEU/genetics.binaRies,
     mrcieu/ieugwasr,
     MRCIEU/TwoSampleMR
 VignetteBuilder: 
