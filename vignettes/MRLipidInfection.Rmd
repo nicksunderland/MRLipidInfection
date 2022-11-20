@@ -287,7 +287,7 @@ p <- ggplot(plot_dat, aes(x=lipid, y=gene)) +
     geom_tile(aes(fill=pval)) + 
     # Set the text to the beta value
     geom_text(aes(label = paste("\u03B2", round(b, 3)))) +
-    # Set the text to the beta value
+    # Set the text to the p value
     geom_text(aes(label = paste("p =", round(pval, 3))), nudge_y=-0.15, size=3.5, fontface = "italic") +
     # Ensure a very sharp colour transition at <0.05 --> green
     # Bottom 5% colour scale is green; top 95% colour scale is viridis gradient
