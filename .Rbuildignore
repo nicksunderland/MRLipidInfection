@@ -7,7 +7,7 @@
 ^docs$
 ^pkgdown$
 
-^inst/extdata/ld_reference_panel/.+$
-^inst/extdata/glgc/.+$
+^inst/extdata/(?!config).+$
+!inst/extdata/config.+$
 ^vignettes/lipid-therapy-sepsis-mr_cache/.+$
 ^\.github$

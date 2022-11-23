@@ -7,12 +7,12 @@
 \S4method{clump_snps}{GWAS}(object, do_local = FALSE)
 }
 \arguments{
-\item{do_local}{run on local machine, if false does on IEU servers}
+\item{object}{d}
 
-\item{GWAS}{a GWAS object}
+\item{do_local}{d}
 }
 \value{
-a GWAS object with clumped data
+d
 }
 \description{
 Title

@@ -11,8 +11,8 @@
 #' @slot col_map list of .
 #' @slot overwrite whether or not to overwrite the cached data files
 #' @slot data a data.table object with the parse GWAS SNP data
+#' @slot use_flag the SNPs to use in the analysis
 #' @slot gen_reg a GenomeRegion object defining how to filter the SNP data
-#' @slot clump_flag a
 #'
 #' @importFrom magrittr %>%
 #' @importFrom yaml read_yaml
@@ -22,10 +22,13 @@
 #' @importFrom rlang exec
 #' @importFrom TwoSampleMR format_data
 #' @importFrom data.table as.data.table fwrite fread
+#' @importFrom methods callNextMethod validObject
 #'
 #' @return a GWAS object
 #' @export
 #'
+.=NULL
+
 GWAS <- setClass(
 
   # The class name
@@ -58,6 +61,13 @@ GWAS <- setClass(
     use_flag  = logical())
 )
 
+#' initialize
+#'
+#' @param .Object d
+#' @param ... d
+#'
+#' @return a GWAS object
+#'
 setMethod(
   f          = "initialize",
   signature  = "GWAS",
@@ -101,12 +111,25 @@ setValidity("GWAS", function(object)
 }
 )
 
-setGeneric("extract_snps", function(object) standardGeneric("extract_snps"))
-#' Title
+#' extract_snps
 #'
-#' @param GWAS a GWAS objects
+#' @param object a GWAS objects
 #'
 #' @return GWAS object with SNPs extracted to data field
+#' @export
+#'
+setGeneric("extract_snps", function(object) standardGeneric("extract_snps"))
+
+
+#' Title
+#'
+#' @param object d
+#'
+#' @importFrom methods validObject
+#' @importFrom dplyr mutate across filter distinct
+#' @importFrom rlang :=
+#'
+#' @return d
 #' @export
 #'
 setMethod(
@@ -239,7 +262,28 @@ setMethod(
 
 
 
+#' set genome_region
+#'
+#' @param object a valid GWAS object
+#' @param value a valid GenomeRegion object
+#'
+#' @importFrom methods callNextMethod validObject
+#'
+#' @return a valid GWAS object with GenomeRegion set
+#' @export
+#'
 setGeneric("genome_region<-", function(object, value) standardGeneric("genome_region<-"))
+
+#' set genome_region
+#'
+#' @param object a valid GWAS object
+#' @param value a valid GenomeRegion object
+#'
+#' @importFrom methods callNextMethod validObject
+#'
+#' @return a valid GWAS object with GenomeRegion set
+#' @export
+#'
 setMethod(
   f          = "genome_region<-",
   signature  = c("GWAS", "GenomeRegion"),
@@ -278,13 +322,26 @@ setMethod(
 )
 
 
-setGeneric("clump_snps", function(object, do_local=FALSE) standardGeneric("clump_snps"))
-#' Title
+#' clump_snps
 #'
-#' @param GWAS a GWAS object
+#' @param object a GWAS object
 #' @param do_local run on local machine, if false does on IEU servers
 #'
+#' @importFrom methods validObject
+#'
 #' @return a GWAS object with clumped data
+#' @export
+#'
+setGeneric("clump_snps", function(object, do_local=FALSE) standardGeneric("clump_snps"))
+
+
+
+#' Title
+#'
+#' @param object d
+#' @param do_local d
+#'
+#' @return d
 #' @export
 #'
 setMethod(
@@ -351,17 +408,13 @@ setMethod(
 )
 
 
-
-
-
-
-
-
 #' get_default_gwas_config
 #'
 #' opens the default config file and returns the path
 #'
 #' @param open_file whether to open file in R
+#'
+#' @importFrom utils file.edit
 #'
 #' @return file path
 #' @export
@@ -374,7 +427,7 @@ get_default_gwas_config <- function(open_file=FALSE)
     if(open_file)
     {
         # Open the file for editing
-        file.edit(fp)
+        utils::file.edit(fp)
     }
 
     # Return the path

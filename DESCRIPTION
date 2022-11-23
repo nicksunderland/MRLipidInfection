@@ -20,11 +20,17 @@ Imports:
     ggplot2,
     httr,
     ieugwasr,
+    magrittr,
     methods,
     purrr,
+    RCurl,
     readr,
+    rlang,
     scales,
-    TwoSampleMR
+    tibble,
+    TwoSampleMR,
+    urltools,
+    yaml
 Suggests: 
     knitr,
     rmarkdown
