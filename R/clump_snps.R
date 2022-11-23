@@ -2,31 +2,16 @@
 #'
 #' @param exposure_data a data.table consistent with output from TwoSampleMR::format_data; must be a
 #'   named list
+#' @param genome_region a GenomeRegion object with appropriate clum
 #' @param do_local whether to do the processing on the local computer or IEU servers
-#' @param clump_kb Clumping window, default is 10000. (vector of length = length(exposure_data); or
-#'   1, in which case it will be recycled)
-#' @param clump_r2 Clumping r2 cutoff.  (vector of length = length(exposure_data); or 1, in which
-#'   case it will be recycled)
-#' @param clump_p1 Clumping sig level for index SNPs, default is 1.  (vector of length =
-#'   length(exposure_data); or 1, in which case it will be recycled)
-#' @param clump_p2 Clumping sig level for secondary SNPs, default is 1.  (vector of length =
-#'   length(exposure_data); or 1, in which case it will be recycled)
-#' @param pop Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS,
-#'   EAS, AFR, AMR. 'legacy' also available - which is a previously used verison of the EUR panel
-#'   with a slightly different set of markers
 #'
 #' @return clumped data.table, or list of them
 #' @export
 #'
-clump_snps <- function(exposure_data,
-                       do_local=FALSE,
-                       clump_kb = 10000,
-                       clump_r2 = 0.001,
-                       clump_p1 = 1,
-                       clump_p2 = 1,
-                       pop = "EUR"){
+clump_snps <- function(exposure_data, genome_region, do_local=FALSE){
 
     # The length of all the clumping parameters should be either 1 or length(exposure_data)
+
     if(is.data.frame(exposure_data)){
         n <- 1
     }else if(is.list(exposure_data)){

@@ -7,7 +7,7 @@
 #'   (will download here), or a string (will be used to create a subdirectory within the main
 #'   downloads directory)
 #' @param overwrite whether or not to overwrite the file
-#' @return a tibble containing the data
+#' @return a file path to the data
 #' @importFrom httr GET
 #' @importFrom utils tail download.file
 #' @export

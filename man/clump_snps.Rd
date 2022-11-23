@@ -4,37 +4,15 @@
 \alias{clump_snps}
 \title{clump_snps}
 \usage{
-clump_snps(
-  exposure_data,
-  do_local = FALSE,
-  clump_kb = 10000,
-  clump_r2 = 0.001,
-  clump_p1 = 1,
-  clump_p2 = 1,
-  pop = "EUR"
-)
+clump_snps(object, do_local = FALSE)
 }
 \arguments{
+\item{do_local}{whether to do the processing on the local computer or IEU servers}
+
 \item{exposure_data}{a data.table consistent with output from TwoSampleMR::format_data; must be a
 named list}
 
-\item{do_local}{whether to do the processing on the local computer or IEU servers}
-
-\item{clump_kb}{Clumping window, default is 10000. (vector of length = length(exposure_data); or
-1, in which case it will be recycled)}
-
-\item{clump_r2}{Clumping r2 cutoff.  (vector of length = length(exposure_data); or 1, in which
-case it will be recycled)}
-
-\item{clump_p1}{Clumping sig level for index SNPs, default is 1.  (vector of length =
-length(exposure_data); or 1, in which case it will be recycled)}
-
-\item{clump_p2}{Clumping sig level for secondary SNPs, default is 1.  (vector of length =
-length(exposure_data); or 1, in which case it will be recycled)}
-
-\item{pop}{Super-population to use as reference panel. Default = "EUR". Options are EUR, SAS,
-EAS, AFR, AMR. 'legacy' also available - which is a previously used verison of the EUR panel
-with a slightly different set of markers}
+\item{genome_region}{a GenomeRegion object with appropriate clum}
 }
 \value{
 clumped data.table, or list of them

@@ -16,7 +16,7 @@ downloads directory)}
 \item{overwrite}{whether or not to overwrite the file}
 }
 \value{
-a tibble containing the data
+a file path to the data
 }
 \description{
 Gets a web based file and downloads it into the packages downloads directory (inst/extdata)
