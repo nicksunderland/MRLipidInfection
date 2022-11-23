@@ -22,19 +22,34 @@
     <loc>https://nicksunderland.github.io/MRLipidInfection/index.html</loc>
   </url>
   <url>
-    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/Gene-class.html</loc>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/GenomeRegion-class.html</loc>
+  </url>
+  <url>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/clump_snps-GWAS-method.html</loc>
   </url>
   <url>
     <loc>https://nicksunderland.github.io/MRLipidInfection/reference/clump_snps.html</loc>
   </url>
   <url>
-    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/create_cis_gene_exposure.html</loc>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/dot-.html</loc>
   </url>
   <url>
-    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/extract_significant_snps.html</loc>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/extract_snps-GWAS-method.html</loc>
+  </url>
+  <url>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/extract_snps.html</loc>
+  </url>
+  <url>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/genome_region-set-GWAS-GenomeRegion-method.html</loc>
+  </url>
+  <url>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/genome_region-set.html</loc>
   </url>
   <url>
     <loc>https://nicksunderland.github.io/MRLipidInfection/reference/get_b_file.html</loc>
+  </url>
+  <url>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/get_default_gwas_config.html</loc>
   </url>
   <url>
     <loc>https://nicksunderland.github.io/MRLipidInfection/reference/get_downloads_dir.html</loc>
@@ -47,6 +62,9 @@
   </url>
   <url>
     <loc>https://nicksunderland.github.io/MRLipidInfection/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>https://nicksunderland.github.io/MRLipidInfection/reference/initialize-GWAS-method.html</loc>
   </url>
   <url>
     <loc>https://nicksunderland.github.io/MRLipidInfection/reference/setupMRLipidInfection.html</loc>
