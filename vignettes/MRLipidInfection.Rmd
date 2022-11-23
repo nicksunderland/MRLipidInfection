@@ -321,7 +321,7 @@ p <- ggplot(plot_dat, aes(x=lipid, y=gene)) +
 ```
 ```{r write_heatmap, include=FALSE, eval = FALSE}
 # Write out the figure (size )
-png(file="vignettes/figures/mr_heatmap.png", width=7, height=35, units="in", res=100)
+png(file="vignettes/figures/mr_heatmap.png", width=7, height=35, units="in", res=300)
 p
 dev.off()
 ```

@@ -5,7 +5,7 @@ utils::globalVariables(".")
 #' This class handles GWAS data making it easy to import external GWASs, manipulate them and quickly
 #' retrieve the results by loaded cached .csv files. It uses TwoSampleMR::format_data s
 #'
-#' @slot type "exposure" or "outcome"
+#' @slot type "exposure" or "outcome".
 #' @slot file_path path to a gwas file that can be read by data.table::fread()
 #' @slot config path to a yaml file with the column config information
 #' @slot name a name for this GWAS
