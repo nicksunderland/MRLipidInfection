@@ -85,8 +85,8 @@ using:</p>
 requirements by calling <code><a href="../reference/setupMRLipidInfection.html">setupMRLipidInfection()</a></code>. At the
 first installation this will take some time as this will download the <a href="http://fileserve.mrcieu.ac.uk/ld/1kg.v3.tgz" class="external-link">1000 genomes LD
 reference panel</a> into the package file structure and ensure that <a href="https://www.cog-genomics.org/plink/" class="external-link">PLINK</a> is installed
-locally. If you plan to use only the IEU servers for LD processing you
-can skip these downloads.</p>
+locally. If you plan to use only the Bristol IEU servers for LD
+processing you can skip these downloads.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://nicksunderland.github.io/MRLipidInfection/">MRLipidInfection</a></span><span class="op">)</span></span>
 <span></span>
@@ -95,21 +95,29 @@ can skip these downloads.</p>
 <div class="section level3">
 <h3 id="configuration-file">Configuration file<a class="anchor" aria-label="anchor" href="#configuration-file"></a>
 </h3>
-<p>The column names in any given GWAS may not be consistent with the
-<code>TwoSampleMR</code> package naming conventions.
+<p>The column names in any given GWAS file may not be consistent with
+the <code>TwoSampleMR</code> package naming conventions.
 <code>TwoSampleMR</code> provides the function
 <code><a href="https://rdrr.io/pkg/TwoSampleMR/man/format_data.html" class="external-link">TwoSampleMR::format_data</a></code> to appropriately rename the
 columns, as well as extra data checking and imputation processing. To
-configure this correctly we need to provide a <code>config.yml</code>
-file to the <code>GWAS</code> object constructor specifying the mapping
-of column names. A copy of the file structure can be opened in
-<code>R</code> with the <code><a href="../reference/get_default_gwas_config.html">get_default_gwas_config()</a></code> - a copy
-of this should be saved and adjusted as needed.</p>
+configure this correctly we need to provide a column mapping
+<code>config.yml</code> file to the constructor of this package’s
+<code>GWAS</code> class. An example of the <code>config.yml</code>
+structure can be opened in <code>R</code> with the
+<code><a href="../reference/get_default_gwas_config.html">get_default_gwas_config()</a></code> command - a copy of this should
+be saved and adjusted as needed.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># File path to the config file; set open_file=TRUE to also opens the file in RStudio</span></span>
+<code class="sourceCode R"><span><span class="co"># File path to the config file; set open_file=TRUE to also open the file in RStudio</span></span>
 <span><span class="va">fp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_default_gwas_config.html">get_default_gwas_config</a></span><span class="op">(</span>open_file<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">fp</span></span>
+<span><span class="co">#&gt; [1] "/home/runner/work/_temp/Library/MRLipidInfection/extdata/config/default_gwas.yml"</span></span>
 <span></span>
-<span><span class="co"># View the structure of the config file</span></span>
+<span><span class="co"># Set the config file for the GLGC GWAS data</span></span>
+<span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/config/glgc_gwas.yml"</span>, package <span class="op">=</span> <span class="st">"MRLipidInfection"</span><span class="op">)</span></span>
+<span><span class="va">config</span></span>
+<span><span class="co">#&gt; [1] "/home/runner/work/_temp/Library/MRLipidInfection/extdata/config/glgc_gwas.yml"</span></span>
+<span></span>
+<span><span class="co"># View the structure of the default config file</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="st">"old_name"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu">yaml</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/yaml/man/read_yaml.html" class="external-link">read_yaml</a></span><span class="op">(</span><span class="va">fp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>                        <span class="st">"new_name"</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">yaml</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/yaml/man/read_yaml.html" class="external-link">read_yaml</a></span><span class="op">(</span><span class="va">fp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
@@ -196,10 +204,6 @@ of this should be saved and adjusted as needed.</p>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Set the config file for the GLGC GWAS data</span></span>
-<span><span class="va">config</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/config/glgc_gwas.yml"</span>, package <span class="op">=</span> <span class="st">"MRLipidInfection"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="exposure-data">Exposure data<a class="anchor" aria-label="anchor" href="#exposure-data"></a>
@@ -209,18 +213,19 @@ of this should be saved and adjusted as needed.</p>
 </h3>
 <p>Next we must obtain the data for the exposure. We are interested
 whether exposure to lipid lowering medications influences risk of
-developing sepsis. This data is not readily available on a population
-level and has many confounding factors. We will therefore estimate the
-effect of genetically proxied lipid medication therapy by looking for
-Single Nucleotide Polymorphisms (SNPs) in close proximity to known lipid
-metabolism genes (HMG-CoA Reductase, NPC1L1, PCSK9) that are
-significantly associated with circulating lipid levels.</p>
+developing sepsis. This exact data is not readily available on a
+population level and has many confounding factors. We will therefore
+estimate the effect of genetically proxied lipid medication therapy by
+looking for Single Nucleotide Polymorphisms (SNPs) in close proximity to
+known lipid metabolism genes (HMG-CoA Reductase, NPC1L1, PCSK9, CETP)
+that are significantly associated with circulating lipid levels.</p>
 <p>We will use the the latest Global Lipids Genetics Consortium <a href="http://csg.sph.umich.edu/willer/public/glgc-lipids2021/" class="external-link">Ancestry-specific
 GWAS summary statistics</a> for the lipid components: HDL-C, LDL-C,
-nonHDL-C, TC and TG. As we will be using outcome data from the UK
-BioBank we will use the data excluding the UK BioBank to avoid overlap
-of the exposure and outcome populations.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+nonHDL-C, TC and TG.</p>
+<p>As we will be using sepsis outcome data from the UK BioBank we will
+use the data excluding the UK BioBank to avoid overlap of the exposure
+and outcome populations.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># List the URLs of the data sources</span></span>
 <span><span class="va">urls_lst</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>  <span class="st">"LDL"</span>    <span class="op">=</span> <span class="st">"http://csg.sph.umich.edu/willer/public/glgc-lipids2021/results/ancestry_specific/without_UKB_LDL_INV_EUR_HRC_1KGP3_others_ALL.meta.singlevar.results.gz"</span>,</span>
@@ -234,24 +239,86 @@ Internally, the GWAS object reads in the data file provided through the
 parameter <code>file_path</code>. If <code>file_path</code> is a URL
 then the file is first downloaded into the package downloads directory
 and extracted.</p>
-<p><strong>Warning</strong> The GWAS data files are large and will take
-some time to download. Creating further <code>GWAS</code> objects with
-the same <code>file_path</code> will result in much quicker loading as
-the class first checks whether the file has already been downloaded and
-extracted.</p>
-<p>There are more than 47 million SNPs in the datasets. We need to
-filter the GWAS data SNPs associated with circulating lipid levels at a
-statistical significance of <code>p&lt;5e-8</code>. This threshold is
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">##Example GWAS object</span></span>
+<span><span class="va">test_filepath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"test_data.csv"</span>,   package<span class="op">=</span><span class="st">"MRLipidInfection"</span><span class="op">)</span></span>
+<span><span class="va">test_config</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata"</span>, <span class="st">"test_config.yml"</span>, package<span class="op">=</span><span class="st">"MRLipidInfection"</span><span class="op">)</span></span>
+<span><span class="va">testGWAS</span>      <span class="op">&lt;-</span> <span class="fu"><a href="../reference/GWAS-class.html">GWAS</a></span><span class="op">(</span>file_path <span class="op">=</span> <span class="va">test_filepath</span>, </span>
+<span>                      config    <span class="op">=</span> <span class="va">test_config</span>, </span>
+<span>                      name      <span class="op">=</span> <span class="st">"test"</span>, </span>
+<span>                      type      <span class="op">=</span> <span class="st">"exposure"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## GWAS object structure</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">testGWAS</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Formal class 'GWAS' [package "MRLipidInfection"] with 10 slots</span></span>
+<span><span class="co">#&gt;   ..@ type     : chr "exposure"</span></span>
+<span><span class="co">#&gt;   ..@ name     : chr "test"</span></span>
+<span><span class="co">#&gt;   ..@ file_path: chr "/home/runner/work/_temp/Library/MRLipidInfection/testdata/test_data.csv"</span></span>
+<span><span class="co">#&gt;   ..@ config   : chr "/home/runner/work/_temp/Library/MRLipidInfection/testdata/test_config.yml"</span></span>
+<span><span class="co">#&gt;   ..@ overwrite: logi FALSE</span></span>
+<span><span class="co">#&gt;   ..@ sig_pval : num 5e-08</span></span>
+<span><span class="co">#&gt;   ..@ col_map  :List of 13</span></span>
+<span><span class="co">#&gt;   .. ..$ type             : chr "exposure"</span></span>
+<span><span class="co">#&gt;   .. ..$ phenotype_col    : chr "Phenotype"</span></span>
+<span><span class="co">#&gt;   .. ..$ snp_col          : chr "SNP"</span></span>
+<span><span class="co">#&gt;   .. ..$ beta_col         : chr "beta"</span></span>
+<span><span class="co">#&gt;   .. ..$ se_col           : chr "se"</span></span>
+<span><span class="co">#&gt;   .. ..$ eaf_col          : chr "eaf"</span></span>
+<span><span class="co">#&gt;   .. ..$ effect_allele_col: chr "effect_allele"</span></span>
+<span><span class="co">#&gt;   .. ..$ other_allele_col : chr "other_allele"</span></span>
+<span><span class="co">#&gt;   .. ..$ pval_col         : chr "pval"</span></span>
+<span><span class="co">#&gt;   .. ..$ samplesize_col   : chr "samplesize"</span></span>
+<span><span class="co">#&gt;   .. ..$ id_col           : chr "id"</span></span>
+<span><span class="co">#&gt;   .. ..$ chr_col          : chr "chr"</span></span>
+<span><span class="co">#&gt;   .. ..$ pos_col          : chr "pos"</span></span>
+<span><span class="co">#&gt;   ..@ data     :Classes 'data.table' and 'data.frame':   9 obs. of  15 variables:</span></span>
+<span><span class="co">#&gt;   .. ..$ SNP                   : chr [1:9] "rs1123571" "rs903911" "rs6698680" "rs6685829" ...</span></span>
+<span><span class="co">#&gt;   .. ..$ chr.exposure          : int [1:9] 1 1 1 1 1 1 1 1 1</span></span>
+<span><span class="co">#&gt;   .. ..$ pos.exposure          : int [1:9] 2326009 2326812 2329661 2330016 2330190 2332391 2338126 2339139 2339427</span></span>
+<span><span class="co">#&gt;   .. ..$ other_allele.exposure : chr [1:9] "G" "A" "A" "C" ...</span></span>
+<span><span class="co">#&gt;   .. ..$ effect_allele.exposure: chr [1:9] "A" "G" "G" "T" ...</span></span>
+<span><span class="co">#&gt;   .. ..$ samplesize.exposure   : int [1:9] 808038 810508 810507 808046 813372 821075 810363 787211 787211</span></span>
+<span><span class="co">#&gt;   .. ..$ eaf.exposure          : num [1:9] 0.473 0.474 0.474 0.499 0.473 0.469 0.449 0.441 0.412</span></span>
+<span><span class="co">#&gt;   .. ..$ beta.exposure         : num [1:9] -0.0111 -0.0108 -0.0107 -0.0106 -0.0109 ...</span></span>
+<span><span class="co">#&gt;   .. ..$ se.exposure           : num [1:9] 0.00169 0.00169 0.00169 0.00169 0.00169 ...</span></span>
+<span><span class="co">#&gt;   .. ..$ pval.exposure         : num [1:9] 5.26e-11 1.45e-10 2.32e-10 3.00e-10 1.13e-10 ...</span></span>
+<span><span class="co">#&gt;   .. ..$ id.exposure           : chr [1:9] NA NA NA NA ...</span></span>
+<span><span class="co">#&gt;   .. ..$ exposure              : chr [1:9] "LDL" "LDL" "LDL" "LDL" ...</span></span>
+<span><span class="co">#&gt;   .. ..$ mr_keep.exposure      : logi [1:9] TRUE TRUE TRUE TRUE TRUE TRUE ...</span></span>
+<span><span class="co">#&gt;   .. ..$ pval_origin.exposure  : chr [1:9] "reported" "reported" "reported" "reported" ...</span></span>
+<span><span class="co">#&gt;   .. ..$ gene.exposure         : chr [1:9] NA NA NA NA ...</span></span>
+<span><span class="co">#&gt;   .. ..- attr(*, ".internal.selfref")=&lt;externalptr&gt; </span></span>
+<span><span class="co">#&gt;   ..@ use_flag : logi [1:9] TRUE TRUE TRUE TRUE TRUE TRUE ...</span></span>
+<span><span class="co">#&gt;   ..@ gen_reg  :Formal class 'GenomeRegion' [package "MRLipidInfection"] with 12 slots</span></span>
+<span><span class="co">#&gt;   .. .. ..@ genome_wide: logi TRUE</span></span>
+<span><span class="co">#&gt;   .. .. ..@ name       : chr NA</span></span>
+<span><span class="co">#&gt;   .. .. ..@ assembly   : chr "GRCh37"</span></span>
+<span><span class="co">#&gt;   .. .. ..@ chromosome : num NA</span></span>
+<span><span class="co">#&gt;   .. .. ..@ start      : num NA</span></span>
+<span><span class="co">#&gt;   .. .. ..@ end        : num NA</span></span>
+<span><span class="co">#&gt;   .. .. ..@ cis_tol    : num 3e+05</span></span>
+<span><span class="co">#&gt;   .. .. ..@ clump_r2   : num 0.001</span></span>
+<span><span class="co">#&gt;   .. .. ..@ clump_kb   : num 10000</span></span>
+<span><span class="co">#&gt;   .. .. ..@ clump_p1   : num 1</span></span>
+<span><span class="co">#&gt;   .. .. ..@ clump_p2   : num 1</span></span>
+<span><span class="co">#&gt;   .. .. ..@ pop        : chr "EUR"</span></span></code></pre></div>
+<p><strong>Warning</strong> The GLGC GWAS data files are large and will
+take some time to download. However, creating further <code>GWAS</code>
+objects with the same <code>file_path</code> will result in much quicker
+loading as the class first checks whether the file has already been
+downloaded. There are more than 47 million SNPs in the datasets. We need
+to filter the GWAS data SNPs associated with circulating lipid levels at
+a statistical significance of <code>p&lt;5e-8</code>. This threshold is
 passed to the <code>GWAS</code> object at instantiation. Internally, the
 <code>GWAS</code> caches the filters SNPs to a .csv file within the
 package structure. This is loaded instead if the command is re-run
 (behaviour that can be overridden by passing <code>overwrite=TRUE</code>
 to the <code>GWAS</code> constructor).</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create a list of GWAS objects</span></span>
+<code class="sourceCode R"><span><span class="co"># Create a list of GWAS objects using the GLGC data</span></span>
 <span><span class="va">lipids_gwas_lst</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">map2</a></span><span class="op">(</span>.x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/unname.html" class="external-link">unname</a></span><span class="op">(</span><span class="va">urls_lst</span><span class="op">)</span>,</span>
 <span>                               .y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">urls_lst</span><span class="op">)</span>, </span>
-<span>                               .f <span class="op">=</span> <span class="op">~</span><span class="fu">GWAS</span><span class="op">(</span>file_path <span class="op">=</span> <span class="va">.x</span>, </span>
+<span>                               .f <span class="op">=</span> <span class="op">~</span><span class="fu"><a href="../reference/GWAS-class.html">GWAS</a></span><span class="op">(</span>file_path <span class="op">=</span> <span class="va">.x</span>, </span>
 <span>                                          name      <span class="op">=</span> <span class="va">.y</span>,</span>
 <span>                                          config    <span class="op">=</span> <span class="va">config</span>,</span>
 <span>                                          type      <span class="op">=</span> <span class="st">"exposure"</span>,</span>
@@ -262,24 +329,27 @@ to the <code>GWAS</code> constructor).</p>
 </h3>
 <p>We will create a set of exposure SNPs that will be subset of the SNPs
 that associate with the 5 lipid components: HDL-C, LDL-C, nonHDL-C, TC
-and TG. This subset of SNPs will be in close proximity (number of bases)
-to the genes of interest (HMG-CoA Reductase, NPC1L1, PCSK9, CETP).</p>
-<p>Data regarding the positions of the genes is available <a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=HMGCR" class="external-link">online</a>.</p>
+and TG. This subset of SNPs will be in close proximity to the genes of
+interest (HMG-CoA Reductase, NPC1L1, PCSK9, CETP). Data regarding the
+positions of the genes is available <a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=HMGCR" class="external-link">online</a>.</p>
 <p>The latest lipid data from the GLGC uses the Genome Reference
 Consortium Human Reference 37 (GRCh37) Assembly and so we must use this
 when referring to the position of the genes.</p>
-<p>First I create a list of objects of class <code>GenomeRegion</code> -
-this is a simple custom S4 class containing gene information. In
+<p>First, we create a list of objects of class <code>GenomeRegion</code>
+- this is a simple custom S4 class containing gene information. In
 addition, we will look at all of the SNPs across the whole genome that
 associate with lipid profile components (set
-<code>genome_wide=TRUE</code>).</p>
+<code>genome_wide=TRUE</code>). Each <code>GWAS</code> object has an
+internal slot for a <code>GenomeRegion</code> object from which it will
+determine the appropriate SNP filtering (e.g. keeping only SNPs around a
+certain genome region / gene).</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># The HMG-CoA-R, NPC1L1, and PCSK9 genes; set the 'cis' base tolerance here.</span></span>
 <span><span class="va">genome_regions_lst</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="../reference/GenomeRegion-class.html">GenomeRegion</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"HMGCR"</span>,  genome_wide<span class="op">=</span><span class="cn">FALSE</span>, chromosome<span class="op">=</span><span class="fl">5</span>,  start<span class="op">=</span><span class="fl">74632993</span>, end<span class="op">=</span><span class="fl">74657941</span>, cis_tol<span class="op">=</span><span class="fl">1e5</span>, clump_r2<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/GenomeRegion-class.html">GenomeRegion</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"NPC1L1"</span>, genome_wide<span class="op">=</span><span class="cn">FALSE</span>, chromosome<span class="op">=</span><span class="fl">7</span>,  start<span class="op">=</span><span class="fl">44552134</span>, end<span class="op">=</span><span class="fl">44580929</span>, cis_tol<span class="op">=</span><span class="fl">1e5</span>, clump_r2<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/GenomeRegion-class.html">GenomeRegion</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"PCSK9"</span>,  genome_wide<span class="op">=</span><span class="cn">FALSE</span>, chromosome<span class="op">=</span><span class="fl">1</span>,  start<span class="op">=</span><span class="fl">55505221</span>, end<span class="op">=</span><span class="fl">55530525</span>, cis_tol<span class="op">=</span><span class="fl">1e5</span>, clump_r2<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="../reference/GenomeRegion-class.html">GenomeRegion</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"CETP"</span>,   genome_wide<span class="op">=</span><span class="cn">FALSE</span>, chromosome<span class="op">=</span><span class="fl">16</span>, start<span class="op">=</span><span class="fl">56995862</span>, end<span class="op">=</span><span class="fl">57017757</span>, cis_tol<span class="op">=</span><span class="fl">1e5</span>, clump_r2<span class="op">=</span><span class="fl">0.1</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/GenomeRegion-class.html">GenomeRegion</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"HMGCR"</span>,  genome_wide<span class="op">=</span><span class="cn">FALSE</span>, chromosome<span class="op">=</span><span class="fl">5</span>,  start<span class="op">=</span><span class="fl">74632993</span>, end<span class="op">=</span><span class="fl">74657941</span>, cis_tol<span class="op">=</span><span class="fl">1e5</span>, clump_r2<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/GenomeRegion-class.html">GenomeRegion</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"NPC1L1"</span>, genome_wide<span class="op">=</span><span class="cn">FALSE</span>, chromosome<span class="op">=</span><span class="fl">7</span>,  start<span class="op">=</span><span class="fl">44552134</span>, end<span class="op">=</span><span class="fl">44580929</span>, cis_tol<span class="op">=</span><span class="fl">1e5</span>, clump_r2<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/GenomeRegion-class.html">GenomeRegion</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"PCSK9"</span>,  genome_wide<span class="op">=</span><span class="cn">FALSE</span>, chromosome<span class="op">=</span><span class="fl">1</span>,  start<span class="op">=</span><span class="fl">55505221</span>, end<span class="op">=</span><span class="fl">55530525</span>, cis_tol<span class="op">=</span><span class="fl">1e5</span>, clump_r2<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="../reference/GenomeRegion-class.html">GenomeRegion</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"CETP"</span>,   genome_wide<span class="op">=</span><span class="cn">FALSE</span>, chromosome<span class="op">=</span><span class="fl">16</span>, start<span class="op">=</span><span class="fl">56995862</span>, end<span class="op">=</span><span class="fl">57017757</span>, cis_tol<span class="op">=</span><span class="fl">1e5</span>, clump_r2<span class="op">=</span><span class="fl">0.2</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="../reference/GenomeRegion-class.html">GenomeRegion</a></span><span class="op">(</span>name<span class="op">=</span><span class="st">"GenomeWide"</span>, genome_wide<span class="op">=</span><span class="cn">TRUE</span>, clump_r2<span class="op">=</span><span class="fl">0.001</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Next we create exposure data for each lipid component
@@ -287,8 +357,8 @@ associate with lipid profile components (set
 be n = <code>length(lipids_gwas_lst)</code> x
 <code>length(genome_regions_list)</code> exposure datasets.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Create the permutations of lipid components and genome regions</span></span>
-<span><span class="va">lipids_gwas_lst</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">map2</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="co"># Create all the permutations of lipid components (#5) and genome regions (#5) = #25 datasets</span></span>
+<span><span class="va">lipid_gene_perms_lst</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">map2</a></span><span class="op">(</span></span>
 <span>  .x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">lipids_gwas_lst</span>,    times<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">genome_regions_lst</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  .y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">genome_regions_lst</span>, each <span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">lipids_gwas_lst</span><span class="op">)</span><span class="op">)</span>, </span>
 <span>  .f <span class="op">=</span> <span class="op">~</span> <span class="fu">`genome_region&lt;-`</span><span class="op">(</span><span class="va">.x</span>, <span class="va">.y</span><span class="op">)</span></span>
@@ -312,12 +382,15 @@ parameters: <code>clump_kb</code>, <code>clump_r2</code>,
 <code>clump_r2</code> with the, which we will set more leniently,
 instead of the default of 0.001, due to the fact we are looking at
 cis-acting SNPs which will be more correlated by virtue of their
-proximity to the genes of interest.</p>
+proximity to the genes of interest. Clumping parameters are passed in as
+part of the <code>GenomeRegion</code> object (<em>above</em>).</p>
 <p>We could do this on the Bristol IEU severs using the function
 <code><a href="https://rdrr.io/pkg/TwoSampleMR/man/clump_data.html" class="external-link">TwoSampleMR::clump_data</a></code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Run clumping</span></span>
-<span><span class="va">lipids_gwas_lst</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">lipids_gwas_lst</span>, <span class="va">clump_snps</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">lipid_gene_perms_clump_lst</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">lipid_gene_perms_lst</span>, <span class="va">clump_snps</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_int</a></span><span class="op">(</span><span class="va">lipid_gene_perms_clump_lst</span>, <span class="op">~</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.x</span><span class="op">@</span><span class="va">use_flag</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 </div>
 </div>
@@ -340,10 +413,8 @@ queried using either the <code>TwoSampleMR</code> or
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"sepsis|pneumonia"</span>, <span class="va">.data</span><span class="op">$</span><span class="va">trait</span>, ignore.case<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># We will pick a few sepsis GWAS</span></span>
-<span><span class="va">outcome_gwas_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ieu-b-5086"</span><span class="op">)</span></span>
-<span><span class="co"># "ieu-b-5088", "ieu-b-4982", </span></span>
-<span><span class="co">#                      "ieu-b-4980", "ieu-b-4981", "ieu-b-69",</span></span>
-<span><span class="co">#                      "finn-b-SEPTICHE_PNEUMONIA")</span></span></code></pre></div>
+<span><span class="va">outcome_gwas_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ieu-b-5086"</span>, <span class="st">"ieu-b-5088"</span>, <span class="st">"ieu-b-4982"</span>, </span>
+<span>                     <span class="st">"ieu-b-4980"</span>, <span class="st">"ieu-b-4981"</span>, <span class="st">"ieu-b-69"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="extracting-outcome-data">Extracting outcome data<a class="anchor" aria-label="anchor" href="#extracting-outcome-data"></a>
@@ -354,7 +425,7 @@ the exposure, in this case the components of the blood lipid
 profile).</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract data for cis-gene SNPs</span></span>
-<span><span class="va">outcome_data</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span>.x <span class="op">=</span> <span class="va">lipids_gwas_lst</span>,</span>
+<span><span class="va">outcome_data</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span>.x <span class="op">=</span> <span class="va">lipid_gene_perms_clump_lst</span>,</span>
 <span>                           .f <span class="op">=</span> <span class="op">~</span> <span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/extract_outcome_data.html" class="external-link">extract_outcome_data</a></span><span class="op">(</span></span>
 <span>                              snps            <span class="op">=</span> <span class="va">.x</span><span class="op">@</span><span class="va">data</span><span class="op">$</span><span class="va">SNP</span><span class="op">[</span><span class="va">.x</span><span class="op">@</span><span class="va">use_flag</span><span class="op">]</span>,</span>
 <span>                              outcomes        <span class="op">=</span> <span class="va">outcome_gwas_id</span>,</span>
@@ -381,10 +452,10 @@ the wrong way round). <em>Note</em> The IEU GWAS database contains data
 that is already harmonised. For more information on <a href="https://mrcieu.github.io/TwoSampleMR/articles/harmonise.html" class="external-link">harmonising</a>.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Filter out the Gene:Lipid SNP associations with no significant SNPs</span></span>
-<span><span class="va">zero_snps</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_lgl</a></span><span class="op">(</span><span class="va">lipids_gwas_lst</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.x</span><span class="op">@</span><span class="va">use_flag</span><span class="op">)</span><span class="op">==</span><span class="fl">0</span><span class="op">)</span></span>
+<span><span class="va">zero_snps</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map_lgl</a></span><span class="op">(</span><span class="va">lipid_gene_perms_clump_lst</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.x</span><span class="op">@</span><span class="va">use_flag</span><span class="op">)</span><span class="op">==</span><span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Harmonise the data for the LDL SNPs across the whole genome</span></span>
-<span><span class="va">harm_dat</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">map2</a></span><span class="op">(</span>.x <span class="op">=</span> <span class="va">lipids_gwas_lst</span><span class="op">[</span><span class="op">!</span><span class="va">zero_snps</span><span class="op">]</span>,</span>
+<span><span class="va">harm_dat</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">map2</a></span><span class="op">(</span>.x <span class="op">=</span> <span class="va">lipid_gene_perms_clump_lst</span><span class="op">[</span><span class="op">!</span><span class="va">zero_snps</span><span class="op">]</span>,</span>
 <span>                        .y <span class="op">=</span> <span class="va">outcome_data</span><span class="op">[</span><span class="op">!</span><span class="va">zero_snps</span><span class="op">]</span>,</span>
 <span>                        .f <span class="op">=</span> <span class="op">~</span> <span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/harmonise_data.html" class="external-link">harmonise_data</a></span><span class="op">(</span><span class="va">.x</span><span class="op">@</span><span class="va">data</span>, <span class="va">.y</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
@@ -392,10 +463,11 @@ that is already harmonised. For more information on <a href="https://mrcieu.gith
 <div class="section level2">
 <h2 id="two-sample-mendelian-randomisation">Two Sample Mendelian Randomisation<a class="anchor" aria-label="anchor" href="#two-sample-mendelian-randomisation"></a>
 </h2>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># The MR result for all of the different scenarios</span></span>
-<span><span class="va">res_dat</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span>.x <span class="op">=</span> <span class="va">harm_dat</span>, </span>
-<span>                      .f <span class="op">=</span> <span class="op">~</span> <span class="fu">TwoSampleMR</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TwoSampleMR/man/mr.html" class="external-link">mr</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The MR result for all of the different scenarios</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>res_dat <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map</span>(<span class="at">.x =</span> harm_dat, </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">.f =</span> <span class="sc">~</span> TwoSampleMR<span class="sc">::</span><span class="fu">mr</span>(.x)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean up the name</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="effects-and-significance">Effects and significance<a class="anchor" aria-label="anchor" href="#effects-and-significance"></a>
 </h3>
@@ -417,8 +489,9 @@ that is already harmonised. For more information on <a href="https://mrcieu.gith
 </h3>
 <p>Genetically proxied inhibition of important lipid metabolism drug
 targets has no consistent effect on the risk of developing sepsis across
-multiple cohorts.</p>
-<p>To be completed…</p>
+multiple cohorts. Apart from CETP which appeared to have significant
+effects in 2 cohorts.</p>
+<p>To be continued…</p>
 <p><br></p>
 </div>
 </div>
@@ -462,7 +535,7 @@ multiple cohorts.</p>
 <div class="section level3">
 <h3 id="mr-scatter-plots">MR scatter plots<a class="anchor" aria-label="anchor" href="#mr-scatter-plots"></a>
 </h3>
-<p>to be added</p>
+<p><img src="figures/mr_scatter_1.png"><img src="figures/mr_scatter_10.png"><img src="figures/mr_scatter_100.png"><img src="figures/mr_scatter_101.png"><img src="figures/mr_scatter_102.png"><img src="figures/mr_scatter_103.png"><img src="figures/mr_scatter_104.png"><img src="figures/mr_scatter_105.png"><img src="figures/mr_scatter_106.png"><img src="figures/mr_scatter_107.png"><img src="figures/mr_scatter_108.png"><img src="figures/mr_scatter_109.png"><img src="figures/mr_scatter_11.png"><img src="figures/mr_scatter_110.png"><img src="figures/mr_scatter_111.png"><img src="figures/mr_scatter_112.png"><img src="figures/mr_scatter_113.png"><img src="figures/mr_scatter_114.png"><img src="figures/mr_scatter_115.png"><img src="figures/mr_scatter_116.png"><img src="figures/mr_scatter_117.png"><img src="figures/mr_scatter_118.png"><img src="figures/mr_scatter_119.png"><img src="figures/mr_scatter_12.png"><img src="figures/mr_scatter_120.png"><img src="figures/mr_scatter_121.png"><img src="figures/mr_scatter_122.png"><img src="figures/mr_scatter_123.png"><img src="figures/mr_scatter_124.png"><img src="figures/mr_scatter_125.png"><img src="figures/mr_scatter_126.png"><img src="figures/mr_scatter_13.png"><img src="figures/mr_scatter_14.png"><img src="figures/mr_scatter_15.png"><img src="figures/mr_scatter_16.png"><img src="figures/mr_scatter_17.png"><img src="figures/mr_scatter_18.png"><img src="figures/mr_scatter_19.png"><img src="figures/mr_scatter_2.png"><img src="figures/mr_scatter_20.png"><img src="figures/mr_scatter_21.png"><img src="figures/mr_scatter_22.png"><img src="figures/mr_scatter_23.png"><img src="figures/mr_scatter_24.png"><img src="figures/mr_scatter_25.png"><img src="figures/mr_scatter_26.png"><img src="figures/mr_scatter_27.png"><img src="figures/mr_scatter_28.png"><img src="figures/mr_scatter_29.png"><img src="figures/mr_scatter_3.png"><img src="figures/mr_scatter_30.png"><img src="figures/mr_scatter_31.png"><img src="figures/mr_scatter_32.png"><img src="figures/mr_scatter_33.png"><img src="figures/mr_scatter_34.png"><img src="figures/mr_scatter_35.png"><img src="figures/mr_scatter_36.png"><img src="figures/mr_scatter_37.png"><img src="figures/mr_scatter_38.png"><img src="figures/mr_scatter_39.png"><img src="figures/mr_scatter_4.png"><img src="figures/mr_scatter_40.png"><img src="figures/mr_scatter_41.png"><img src="figures/mr_scatter_42.png"><img src="figures/mr_scatter_43.png"><img src="figures/mr_scatter_44.png"><img src="figures/mr_scatter_45.png"><img src="figures/mr_scatter_46.png"><img src="figures/mr_scatter_47.png"><img src="figures/mr_scatter_48.png"><img src="figures/mr_scatter_49.png"><img src="figures/mr_scatter_5.png"><img src="figures/mr_scatter_50.png"><img src="figures/mr_scatter_51.png"><img src="figures/mr_scatter_52.png"><img src="figures/mr_scatter_53.png"><img src="figures/mr_scatter_54.png"><img src="figures/mr_scatter_55.png"><img src="figures/mr_scatter_56.png"><img src="figures/mr_scatter_57.png"><img src="figures/mr_scatter_58.png"><img src="figures/mr_scatter_59.png"><img src="figures/mr_scatter_6.png"><img src="figures/mr_scatter_60.png"><img src="figures/mr_scatter_61.png"><img src="figures/mr_scatter_62.png"><img src="figures/mr_scatter_63.png"><img src="figures/mr_scatter_64.png"><img src="figures/mr_scatter_65.png"><img src="figures/mr_scatter_66.png"><img src="figures/mr_scatter_67.png"><img src="figures/mr_scatter_68.png"><img src="figures/mr_scatter_69.png"><img src="figures/mr_scatter_7.png"><img src="figures/mr_scatter_70.png"><img src="figures/mr_scatter_71.png"><img src="figures/mr_scatter_72.png"><img src="figures/mr_scatter_73.png"><img src="figures/mr_scatter_74.png"><img src="figures/mr_scatter_75.png"><img src="figures/mr_scatter_76.png"><img src="figures/mr_scatter_77.png"><img src="figures/mr_scatter_78.png"><img src="figures/mr_scatter_79.png"><img src="figures/mr_scatter_8.png"><img src="figures/mr_scatter_80.png"><img src="figures/mr_scatter_81.png"><img src="figures/mr_scatter_82.png"><img src="figures/mr_scatter_83.png"><img src="figures/mr_scatter_84.png"><img src="figures/mr_scatter_85.png"><img src="figures/mr_scatter_86.png"><img src="figures/mr_scatter_87.png"><img src="figures/mr_scatter_88.png"><img src="figures/mr_scatter_89.png"><img src="figures/mr_scatter_9.png"><img src="figures/mr_scatter_90.png"><img src="figures/mr_scatter_91.png"><img src="figures/mr_scatter_92.png"><img src="figures/mr_scatter_93.png"><img src="figures/mr_scatter_94.png"><img src="figures/mr_scatter_95.png"><img src="figures/mr_scatter_96.png"><img src="figures/mr_scatter_97.png"><img src="figures/mr_scatter_98.png"><img src="figures/mr_scatter_99.png"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
