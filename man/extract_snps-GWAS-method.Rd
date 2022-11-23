@@ -7,7 +7,7 @@
 \S4method{extract_snps}{GWAS}(object)
 }
 \arguments{
-\item{GWAS}{d}
+\item{object}{d}
 }
 \value{
 d

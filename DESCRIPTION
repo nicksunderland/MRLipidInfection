@@ -17,23 +17,22 @@ Imports:
     devtools,
     dplyr,
     genetics.binaRies,
-    ggplot2,
     httr,
     ieugwasr,
     magrittr,
     methods,
-    purrr,
     RCurl,
-    readr,
     rlang,
-    scales,
     tibble,
     TwoSampleMR,
     urltools,
     yaml
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown, 
+    ggplot2,
+    purrr,
+    scales
 Remotes:
     MRCIEU/genetics.binaRies,
     mrcieu/ieugwasr,

@@ -7,7 +7,9 @@
 \S4method{initialize}{GWAS}(.Object, ...)
 }
 \arguments{
-\item{GWAS}{d}
+\item{.Object}{d}
+
+\item{...}{d}
 }
 \value{
 a GWAS object

@@ -1,3 +1,5 @@
+utils::globalVariables(".")
+
 #' GWAS
 #'
 #' This class handles GWAS data making it easy to import external GWASs, manipulate them and quickly
@@ -27,8 +29,6 @@
 #' @return a GWAS object
 #' @export
 #'
-.=NULL
-
 GWAS <- setClass(
 
   # The class name
@@ -41,11 +41,11 @@ GWAS <- setClass(
     file_path = "character",
     config    = "character",
     overwrite = "logical",
-    col_map   = "list",
     sig_pval  = "numeric",
+    col_map   = "list",
     data      = "data.table",
-    gen_reg   = "GenomeRegion",
-    use_flag  = "logical"),
+    use_flag  = "logical",
+    gen_reg   = "GenomeRegion"),
 
   # Constructor
   prototype(
