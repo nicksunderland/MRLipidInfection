@@ -4,5 +4,6 @@
 .httr-oauth
 .DS_Store
 inst/doc
-inst/extdata
+inst/extdata/*
+!inst/extdata/config
 docs

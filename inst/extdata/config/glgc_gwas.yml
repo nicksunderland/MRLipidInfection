@@ -1,0 +1,28 @@
+---
+# Commented out columns not present in GLGC data
+# type: "exposure"
+# phenotype_col: "Phenotype"
+snp_col: "rsID"
+beta_col: "EFFECT_SIZE"
+se_col: "SE"
+eaf_col: "POOLED_ALT_AF"
+effect_allele_col: "ALT"
+other_allele_col: "REF"
+pval_col: "pvalue"
+# units_col: "units"
+# ncase_col: "ncase"
+# ncontrol_col: "ncontrol"
+samplesize_col: "N"
+# gene_col: "gene"
+# id_col: "id"
+# z_col: "z"
+# info_col: "info"
+chr_col: "CHROM"
+pos_col: "POS_b37"
+
+# TODO: these are not column names
+# snps: FALSE
+# log_pval: FALSE
+# min_pval: 1e-200
+# header: TRUE
+

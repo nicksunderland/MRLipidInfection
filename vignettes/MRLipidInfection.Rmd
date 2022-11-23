@@ -98,7 +98,7 @@ downloaded into the package downloads directory and extracted.
 
 **Warning** The GWAS data files are large and will take some time to download. Creating further
 `GWAS` objects with the same `file_path` will result in much quicker loading as the class first
-checks whether the file has already been downloed and extracted.
+checks whether the file has already been downloaded and extracted.
 
 There are more than 47 million SNPs in the datasets. We need to filter the GWAS data SNPs associated
 with circulating lipid levels at a statistical significance of `p<5e-8`. This threshold is passed to
@@ -321,26 +321,20 @@ scatter_plots <- purrr::map2(.x = res_dat,
                              .y = harm_dat,
                              .f = ~TwoSampleMR::mr_scatter_plot(.x, .y)) %>% unlist(recursive = FALSE)
 
-gene = "CETP"
-gwas_id = "ieu-b-5086"
-plots_of_interest <- scatter_plots[grepl(paste0(gene,".",gwas_id), names(scatter_plots))]
-plots_of_interest
+## NOT RUN
+# gene = "CETP"
+# gwas_id = "ieu-b-5086"
+# plots_of_interest <- scatter_plots[grepl(paste0(gene,".",gwas_id), names(scatter_plots))]
+# plots_of_interest
 
 ```
 
 ```{r write_mr_scatter, include=FALSE, echo=FALSE, eval = FALSE}
 # Unlist plots
 scatter_plots <- unlist(scatter_plots, recursive=FALSE)
-
-# Write out the figures
-# for(i in 1:3)
-# {
-#     get(scatter_plots[[i]] 
-#     ggplot2::ggsave(paste0("figures/mr_scatter_plot_", i, ".png"), width=7, height=5, units="in", dpi=100)
-# }
 ```
 
-```{r show_mr_scatter, fig.align="center", eval=TRUE, echo=FALSE, results='asis', eval = FALSE}
+```{r show_mr_scatter, fig.align="center", eval=TRUE, echo=FALSE, results='asis', eval = FALSE, include=FALSE}
 # Get the file paths
 # files <- list.files(path="figures", pattern="mr_scatter_plot_\\d+.png", full.names=TRUE)
 # 
