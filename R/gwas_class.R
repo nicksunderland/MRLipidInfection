@@ -1,30 +1,24 @@
+# Needed to silence RMD check
 utils::globalVariables(".")
 
-#' GWAS
+#' GWAS class
 #'
 #' This class handles GWAS data making it easy to import external GWASs, manipulate them and quickly
-#' retrieve the results by loaded cached .csv files. It uses TwoSampleMR::format_data s
+#' retrieve the results by loaded cached .csv files. It uses TwoSampleMR::format_data() to format
+#' the data and requires a config.yml file that represents the mapping of data source column names
+#' to TwoSampleMR::format_data() function parameters. The constructor also takes a sig_pval value
+#' which is used to filter the SNP data imported from the file_path.
 #'
-#' @slot type "exposure" or "outcome".
-#' @slot file_path path to a gwas file that can be read by data.table::fread()
-#' @slot config path to a yaml file with the column config information
-#' @slot name a name for this GWAS
-#' @slot sig_pval significance level at which to filter SNPs
-#' @slot col_map list of .
-#' @slot overwrite whether or not to overwrite the cached data files
-#' @slot data a data.table object with the parse GWAS SNP data
-#' @slot use_flag the SNPs to use in the analysis
-#' @slot gen_reg a GenomeRegion object defining how to filter the SNP data
-#'
-#' @importFrom magrittr %>%
-#' @importFrom yaml read_yaml
-#' @importFrom RCurl url.exists
-#' @importFrom urltools suffix_extract domain
-#' @importFrom dplyr mutate across filter distinct
-#' @importFrom rlang exec
-#' @importFrom TwoSampleMR format_data
-#' @importFrom data.table as.data.table fwrite fread
-#' @importFrom methods callNextMethod validObject
+#' @slot type character. "exposure" or "outcome".
+#' @slot file_path character. file path to a gwas file that can be read by data.table::fread()
+#' @slot config character. path to a yaml file with the column config information
+#' @slot name character. a name for this GWAS
+#' @slot sig_pval numeric. significance level at which to filter SNPs
+#' @slot col_map list. A named list of new_column --> old_column names - read in from the config.yml file path.
+#' @slot overwrite logical. whether or not to overwrite the cached data files
+#' @slot data data.table. GWAS SNP data
+#' @slot use_flag logical vector. The SNPs to use in the analysis; same length as nrow(data)
+#' @slot gen_reg GenomeRegion. A GenomeRegion object defining how to filter the SNP data
 #'
 #' @return a GWAS object
 #' @export
@@ -63,8 +57,13 @@ GWAS <- setClass(
 
 #' initialize
 #'
-#' @param .Object d
-#' @param ... d
+#' A custom initialize function / constructor for the GWAS class
+#'
+#' @param .Object a GWAS class object
+#' @param ... arguments passed during GWAS class instantiation
+#'
+#' @importFrom methods callNextMethod validObject
+#' @importFrom yaml read_yaml
 #'
 #' @return a GWAS object
 #'
@@ -90,7 +89,6 @@ setMethod(
   }
 )
 
-
 setValidity("GWAS", function(object)
 {
     if(any(is.na(c(object@type, object@file_path, object@config, object@name))))
@@ -113,6 +111,8 @@ setValidity("GWAS", function(object)
 
 #' extract_snps
 #'
+#' The generic function for extract_snps
+#'
 #' @param object a GWAS objects
 #'
 #' @return GWAS object with SNPs extracted to data field
@@ -121,15 +121,21 @@ setValidity("GWAS", function(object)
 setGeneric("extract_snps", function(object) standardGeneric("extract_snps"))
 
 
-#' Title
+#' extract_snps
 #'
-#' @param object d
+#' @param object a GWAS class object
 #'
+#' @importFrom RCurl url.exists
+#' @importFrom urltools suffix_extract domain
+#' @importFrom data.table as.data.table fwrite fread
+#' @importFrom rlang exec sym :=
+#' @importFrom dplyr mutate across filter distinct rename
+#' @importFrom magrittr %>%
+#' @importFrom TwoSampleMR format_data
 #' @importFrom methods validObject
-#' @importFrom dplyr mutate across filter distinct
-#' @importFrom rlang :=
 #'
-#' @return d
+#' @return a valid GWAS class object with SNP extracted into the data slot based on provided
+#'   filtering parameters
 #' @export
 #'
 setMethod(
@@ -262,12 +268,10 @@ setMethod(
 
 
 
-#' set genome_region
+#' set genome_region generic function
 #'
 #' @param object a valid GWAS object
 #' @param value a valid GenomeRegion object
-#'
-#' @importFrom methods callNextMethod validObject
 #'
 #' @return a valid GWAS object with GenomeRegion set
 #' @export
@@ -322,12 +326,10 @@ setMethod(
 )
 
 
-#' clump_snps
+#' clump_snps generic function
 #'
 #' @param object a GWAS object
 #' @param do_local run on local machine, if false does on IEU servers
-#'
-#' @importFrom methods validObject
 #'
 #' @return a GWAS object with clumped data
 #' @export
@@ -336,12 +338,18 @@ setGeneric("clump_snps", function(object, do_local=FALSE) standardGeneric("clump
 
 
 
-#' Title
+#' clump_snps
 #'
-#' @param object d
-#' @param do_local d
+#' @param object a GWAS object
+#' @param do_local run on local machine, if false does on IEU servers
 #'
-#' @return d
+#' @importFrom methods validObject
+#' @importFrom ieugwasr ld_clump
+#' @importFrom dplyr tibble
+#' @importFrom genetics.binaRies get_plink_binary
+#' @importFrom TwoSampleMR clump_data
+#'
+#' @return a GWAS object with use_flag adjusted to only those SNPs that are left after data clumping
 #' @export
 #'
 setMethod(

@@ -2,18 +2,18 @@
 % Please edit documentation in R/gwas_class.R
 \name{clump_snps,GWAS-method}
 \alias{clump_snps,GWAS-method}
-\title{Title}
+\title{clump_snps}
 \usage{
 \S4method{clump_snps}{GWAS}(object, do_local = FALSE)
 }
 \arguments{
-\item{object}{d}
+\item{object}{a GWAS object}
 
-\item{do_local}{d}
+\item{do_local}{run on local machine, if false does on IEU servers}
 }
 \value{
-d
+a GWAS object with use_flag adjusted to only those SNPs that are left after data clumping
 }
 \description{
-Title
+clump_snps
 }

@@ -9,9 +9,9 @@ get_finngen(filename, type = "summary_stats", overwrite = FALSE)
 \arguments{
 \item{filename}{FinnGen file name, a string}
 
-\item{type}{FinnGen data type}
+\item{type}{FinnGen data type; one of 'summary_stats', 'finemapping', 'annotations', or 'covid'}
 
-\item{overwrite}{whether or not to overwrite the file}
+\item{overwrite}{logical of whether or not to overwrite the file}
 }
 \value{
 a tibble containing the data

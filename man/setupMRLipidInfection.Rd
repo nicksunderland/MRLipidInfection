@@ -10,8 +10,11 @@ setupMRLipidInfection(skip_local_download = TRUE)
 \item{skip_local_download}{whether to skip the LD reference panel and PLINK downloads}
 }
 \value{
-side effect setup functions (see below)
+side effect setup functions (see above)
 }
 \description{
-setupMRLipidInfection
+Calling this function will download the 1000 genomes LD reference panel into this Package's
+install directory. It will also ensure that PLINK is installed locally and if not it will
+download it. The last thing that this does is ensure that the correct downloads directory exists
+by calling \code{get_downloads_dir()}
 }

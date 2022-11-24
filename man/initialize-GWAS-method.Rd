@@ -7,13 +7,13 @@
 \S4method{initialize}{GWAS}(.Object, ...)
 }
 \arguments{
-\item{.Object}{d}
+\item{.Object}{a GWAS class object}
 
-\item{...}{d}
+\item{...}{arguments passed during GWAS class instantiation}
 }
 \value{
 a GWAS object
 }
 \description{
-initialize
+A custom initialize function / constructor for the GWAS class
 }

@@ -2,10 +2,10 @@
 #'
 #' Gets a web based file and downloads it into the packages downloads directory (inst/extdata)
 #'
-#' @param url url to file to download, a string
-#' @param directory either NA (will download to main downloads directory), a full directory path
-#'   (will download here), or a string (will be used to create a subdirectory within the main
-#'   downloads directory)
+#' @param url url to file to download
+#' @param directory either NA (will download to main downloads directory - inst/extdata), a full directory path
+#'   (downloads this), or a string (will be used to create a subdirectory within the main
+#'   downloads directory - inst/extdata/*new_directory*)
 #' @param overwrite whether or not to overwrite the file
 #' @return a file path to the data
 #' @importFrom httr GET
@@ -77,8 +77,8 @@ get_web_file <- function(url, directory=NA, overwrite=FALSE)
 #' Gets the FinnGen data - downloads into package downloads directory
 #'
 #' @param filename FinnGen file name, a string
-#' @param type FinnGen data type
-#' @param overwrite whether or not to overwrite the file
+#' @param type FinnGen data type; one of 'summary_stats', 'finemapping', 'annotations', or 'covid'
+#' @param overwrite logical of whether or not to overwrite the file
 #' @return a tibble containing the data
 #' @export
 #'
@@ -106,8 +106,7 @@ get_finngen <- function(filename, type="summary_stats", overwrite=FALSE)
 #'
 #' @param subdir if provided with return the full file path to this subdirectory, within the main
 #'   downloads directory. If it does not exist, it will be created.
-#'
-#' @return the absoltue file path to the downloads folder
+#' @return the absolute file path to the downloads folder
 #' @export
 #'
 get_downloads_dir <- function(subdir=NA){

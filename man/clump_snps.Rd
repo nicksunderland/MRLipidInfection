@@ -2,7 +2,7 @@
 % Please edit documentation in R/gwas_class.R
 \name{clump_snps}
 \alias{clump_snps}
-\title{clump_snps}
+\title{clump_snps generic function}
 \usage{
 clump_snps(object, do_local = FALSE)
 }
@@ -15,5 +15,5 @@ clump_snps(object, do_local = FALSE)
 a GWAS object with clumped data
 }
 \description{
-clump_snps
+clump_snps generic function
 }

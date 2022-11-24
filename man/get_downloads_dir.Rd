@@ -11,7 +11,7 @@ get_downloads_dir(subdir = NA)
 downloads directory. If it does not exist, it will be created.}
 }
 \value{
-the absoltue file path to the downloads folder
+the absolute file path to the downloads folder
 }
 \description{
 get_downloads_dir()

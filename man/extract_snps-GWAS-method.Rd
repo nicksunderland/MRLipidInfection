@@ -2,16 +2,17 @@
 % Please edit documentation in R/gwas_class.R
 \name{extract_snps,GWAS-method}
 \alias{extract_snps,GWAS-method}
-\title{Title}
+\title{extract_snps}
 \usage{
 \S4method{extract_snps}{GWAS}(object)
 }
 \arguments{
-\item{object}{d}
+\item{object}{a GWAS class object}
 }
 \value{
-d
+a valid GWAS class object with SNP extracted into the data slot based on provided
+filtering parameters
 }
 \description{
-Title
+extract_snps
 }

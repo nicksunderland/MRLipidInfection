@@ -2,7 +2,7 @@
 % Please edit documentation in R/gwas_class.R
 \name{genome_region<-}
 \alias{genome_region<-}
-\title{set genome_region}
+\title{set genome_region generic function}
 \usage{
 genome_region(object) <- value
 }
@@ -15,5 +15,5 @@ genome_region(object) <- value
 a valid GWAS object with GenomeRegion set
 }
 \description{
-set genome_region
+set genome_region generic function
 }

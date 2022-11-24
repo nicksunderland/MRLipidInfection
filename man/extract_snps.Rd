@@ -13,5 +13,5 @@ extract_snps(object)
 GWAS object with SNPs extracted to data field
 }
 \description{
-extract_snps
+The generic function for extract_snps
 }

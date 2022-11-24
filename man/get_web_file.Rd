@@ -7,11 +7,11 @@
 get_web_file(url, directory = NA, overwrite = FALSE)
 }
 \arguments{
-\item{url}{url to file to download, a string}
+\item{url}{url to file to download}
 
-\item{directory}{either NA (will download to main downloads directory), a full directory path
-(will download here), or a string (will be used to create a subdirectory within the main
-downloads directory)}
+\item{directory}{either NA (will download to main downloads directory - inst/extdata), a full directory path
+(downloads this), or a string (will be used to create a subdirectory within the main
+downloads directory - inst/extdata/\emph{new_directory})}
 
 \item{overwrite}{whether or not to overwrite the file}
 }

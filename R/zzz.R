@@ -1,8 +1,13 @@
 #' setupMRLipidInfection
 #'
+#' Calling this function will download the 1000 genomes LD reference panel into this Package's
+#' install directory. It will also ensure that PLINK is installed locally and if not it will
+#' download it. The last thing that this does is ensure that the correct downloads directory exists
+#' by calling `get_downloads_dir()`
+#'
 #' @param skip_local_download whether to skip the LD reference panel and PLINK downloads
 #'
-#' @return side effect setup functions (see below)
+#' @return side effect setup functions (see above)
 #' @export
 #'
 setupMRLipidInfection <- function(skip_local_download=TRUE){
@@ -92,7 +97,4 @@ check_local_plink <- function(){
     {
         message("Done")
     }
-
-
 }
-

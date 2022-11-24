@@ -4,35 +4,38 @@
 \name{GWAS-class}
 \alias{GWAS-class}
 \alias{GWAS}
-\title{GWAS}
+\title{GWAS class}
 \value{
 a GWAS object
 }
 \description{
 This class handles GWAS data making it easy to import external GWASs, manipulate them and quickly
-retrieve the results by loaded cached .csv files. It uses TwoSampleMR::format_data s
+retrieve the results by loaded cached .csv files. It uses TwoSampleMR::format_data() to format
+the data and requires a config.yml file that represents the mapping of data source column names
+to TwoSampleMR::format_data() function parameters. The constructor also takes a sig_pval value
+which is used to filter the SNP data imported from the file_path.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{type}}{"exposure" or "outcome"}
+\item{\code{type}}{character. "exposure" or "outcome".}
 
-\item{\code{file_path}}{path to a gwas file that can be read by data.table::fread()}
+\item{\code{file_path}}{character. file path to a gwas file that can be read by data.table::fread()}
 
-\item{\code{config}}{path to a yaml file with the column config information}
+\item{\code{config}}{character. path to a yaml file with the column config information}
 
-\item{\code{name}}{a name for this GWAS}
+\item{\code{name}}{character. a name for this GWAS}
 
-\item{\code{sig_pval}}{significance level at which to filter SNPs}
+\item{\code{sig_pval}}{numeric. significance level at which to filter SNPs}
 
-\item{\code{col_map}}{list of .}
+\item{\code{col_map}}{list. A named list of new_column --> old_column names - read in from the config.yml file path.}
 
-\item{\code{overwrite}}{whether or not to overwrite the cached data files}
+\item{\code{overwrite}}{logical. whether or not to overwrite the cached data files}
 
-\item{\code{data}}{a data.table object with the parse GWAS SNP data}
+\item{\code{data}}{data.table. GWAS SNP data}
 
-\item{\code{use_flag}}{the SNPs to use in the analysis}
+\item{\code{use_flag}}{logical vector. The SNPs to use in the analysis; same length as nrow(data)}
 
-\item{\code{gen_reg}}{a GenomeRegion object defining how to filter the SNP data}
+\item{\code{gen_reg}}{GenomeRegion. A GenomeRegion object defining how to filter the SNP data}
 }}
 
